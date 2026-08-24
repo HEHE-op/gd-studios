@@ -1,0 +1,19 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+
+collections:
+  - name: "downloads"
+    label: "Software & Links"
+    folder: "content/downloads"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Category", name: "category", widget: "select", options: ["Software Releases", "Beast Software & OS Suite", "Free Games Directory", "Custom Tools"] }
+      - { label: "Description", name: "description", widget: "text" }
+      - { label: "Download URL / Share Link", name: "download_url", widget: "string" }
+      - { label: "Tag / Badge", name: "tag", widget: "string", default: "Custom Build" }
