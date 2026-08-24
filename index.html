@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GD Studios | Secure Portal & Management</title>
+  
+  <!-- GOOGLE SEARCH CONSOLE VERIFICATION TAG -->
+  <meta name="google-site-verification" content="T91vC8gBE87yXY0fDnzca20FVonogQ01sMiqzFj1ysA" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #030712;
+      --accent-cyan: #06b6d4;
+      --accent-blue: #3b82f6;
+      --accent-purple: #8b5cf6;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --glass-bg: rgba(15, 23, 42, 0.65);
+      --glass-border: rgba(255, 255, 255, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    #particle-canvas {
+      position: fixed; top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 1; pointer-events: none;
+    }
+
+    .app-container {
+      position: relative; z-index: 2;
+      max-width: 1280px; margin: 0 auto; padding: 0 2rem;
+    }
+
+    /* NAVBAR */
+    nav {
+      position: sticky; top: 0; z-index: 100; height: 90px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--glass-border);
+      background: rgba(3, 7, 18, 0.75); backdrop-filter: blur(12px);
+    }
+
+    .brand-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem; font-weight: 700;
+      background: linear-gradient(135deg, #fff 0%, var(--accent-cyan) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      display: flex; align-items: center; gap: 10px; cursor: pointer;
+    }
+
+    .brand-badge {
+      font-size: 0.65rem; background: rgba(6, 182, 212, 0.15);
+      color: var(--accent-cyan); padding: 4px 10px; border-radius: 20px;
+      border: 1px solid rgba(6, 182, 212, 0.3); -webkit-text-fill-color: initial;
+    }
+
+    .nav-links { display: flex; gap: 1.8rem; list-style: none; }
+    .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: 0.3s; }
+    .nav-links a:hover, .nav-links a.active { color: #fff; }
+
+    .btn-action {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      color: white; border: none; padding: 10px 20px;
+      border-radius: 30px; font-weight: 600; font-size: 0.85rem;
+      cursor: pointer; transition: all 0.3s ease;
+    }
+    .btn-action:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4); }
+
+    /* PAGE VIEWS */
+    .page-view { display: none; padding-bottom: 5rem; }
+    .page-view.active { display: block; }
+
+    /* HERO & SEARCH BAR */
+    .hero { padding: 4rem 0 2rem; text-align: center; max-width: 900px; margin: 0 auto; }
+    .hero h1 {
+      font-family: 'Space Grotesk', sans-serif; font-size: 3.5rem; line-height: 1.1; margin-bottom: 1.2rem;
+      background: linear-gradient(180deg, #FFFFFF 0%, #94A3B8 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero p { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 2rem; }
+
+    .search-container {
+      max-width: 600px; margin: 0 auto 1.5rem; position: relative;
+    }
+    .search-input {
+      width: 100%; background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--accent-cyan); padding: 16px 20px;
+      border-radius: 30px; color: #fff; outline: none; font-size: 1rem;
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.15); transition: all 0.3s;
+    }
+    .search-input:focus {
+      box-shadow: 0 0 25px rgba(6, 182, 212, 0.35); border-color: #fff;
+    }
+
+    .hero-btn-group { display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem; }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
+      color: #fff; padding: 12px 24px; border-radius: 30px; font-weight: 600;
+      font-size: 0.9rem; cursor: pointer; transition: all 0.3s; text-decoration: none;
+    }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.15); border-color: var(--accent-cyan); }
+
+    /* SECTIONS */
+    .section-header { text-align: center; margin: 4rem 0 2rem; scroll-margin-top: 100px; }
+    .section-title { font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; color: #fff; }
+    .section-sub { color: var(--text-muted); font-size: 0.95rem; margin-top: 0.3rem; }
+
+    /* GRIDS & CARDS */
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+
+    .card {
+      background: var(--glass-bg); border: 1px solid var(--glass-border);
+      border-radius: 20px; padding: 2rem; backdrop-filter: blur(16px);
+      display: flex; flex-direction: column; justify-content: space-between;
+      transition: all 0.3s ease;
+    }
+    .card:hover { border-color: var(--accent-cyan); transform: translateY(-4px); }
+
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+    .card-tag { font-size: 0.75rem; color: var(--accent-cyan); font-weight: 700; text-transform: uppercase; }
+    .card-tag.game { color: var(--accent-purple); }
+    .card-tag.highlight { color: var(--accent-green); }
+
+    .card h4 { font-size: 1.25rem; color: #fff; margin-bottom: 0.5rem; }
+    .card p { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.5; }
+
+    .file-status-missing {
+      color: var(--accent-red); font-size: 0.75rem; font-weight: 800;
+      letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 5px;
+    }
+    .file-status-missing::before { content: '●'; font-size: 0.9rem; }
+
+    .btn-download {
+      background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
+      color: #fff; padding: 10px 16px; border-radius: 12px; font-weight: 600;
+      font-size: 0.85rem; cursor: pointer; text-align: center; text-decoration: none;
+      transition: all 0.3s; display: block;
+    }
+    .btn-download:hover { background: var(--accent-blue); border-color: var(--accent-blue); }
+    
+    .btn-download.disabled {
+      background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3);
+      color: var(--accent-red); cursor: not-allowed;
+    }
+
+    /* PROJECTS SHOWCASE STYLES */
+    .project-card {
+      background: rgba(15, 23, 42, 0.8); border: 1px solid var(--glass-border);
+      border-radius: 24px; padding: 2.5rem; backdrop-filter: blur(16px);
+      position: relative; overflow: hidden; transition: all 0.3s ease;
+    }
+    .project-card:hover { border-color: var(--accent-purple); box-shadow: 0 10px 30px rgba(139, 92, 246, 0.15); }
+    .project-card::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+    }
+    .project-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; color: #fff; margin-bottom: 0.8rem; }
+    .project-desc { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem; }
+    
+    .feature-list { list-style: none; margin-bottom: 2rem; }
+    .feature-list li {
+      font-size: 0.88rem; color: #e2e8f0; margin-bottom: 0.6rem;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .feature-list li::before { content: '⚡'; color: var(--accent-cyan); font-size: 0.8rem; }
+
+    .tech-pill-container { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .tech-pill {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      color: var(--accent-cyan); font-size: 0.75rem; padding: 4px 12px; border-radius: 12px; font-weight: 600;
+    }
+
+    /* ADMIN MANAGEMENT STYLES */
+    .admin-container { max-width: 850px; margin: 3rem auto; }
+    .admin-card-box {
+      background: rgba(15, 23, 42, 0.85); border: 1px solid var(--glass-border);
+      border-radius: 24px; padding: 2.5rem; backdrop-filter: blur(20px);
+      margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .admin-card-box h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; margin-bottom: 0.5rem; color: #fff; }
+    .admin-card-box p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.8rem; }
+    
+    .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.2rem; }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-group.full-width { grid-column: span 2; }
+    .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #e2e8f0; margin-bottom: 0.5rem; }
+    .form-group label span { font-size: 0.75rem; color: var(--text-muted); font-weight: 400; margin-left: 5px; }
+    
+    .form-group input, .form-group select {
+      width: 100%; background: #030712; border: 1px solid var(--glass-border);
+      padding: 14px 18px; border-radius: 12px; color: #fff; outline: none; font-size: 0.95rem;
+      transition: border-color 0.3s ease;
+    }
+    .form-group input[type="file"] { padding: 10px 14px; cursor: pointer; }
+    .form-group input:focus, .form-group select:focus { border-color: var(--accent-green); }
+
+    /* LOGIN MODAL */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s;
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .modal-box {
+      background: #0f172a; border: 1px solid var(--glass-border);
+      border-radius: 20px; padding: 2.5rem; width: 100%; max-width: 380px; text-align: center;
+    }
+    .modal-box input {
+      width: 100%; background: #030712; border: 1px solid var(--glass-border);
+      padding: 12px; border-radius: 10px; color: #fff; margin-bottom: 1rem; outline: none;
+    }
+
+    footer {
+      border-top: 1px solid var(--glass-border); padding: 3rem 0;
+      margin-top: 4rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="particle-canvas"></canvas>
+
+  <div class="app-container">
+    <nav>
+      <div class="brand-logo" onclick="switchPage('public-page')">GD STUDIOS <span class="brand-badge">V5.2</span></div>
+      
+      <ul class="nav-links">
+        <li><a href="#" id="nav-public" class="active" onclick="switchPage('public-page')">Public Hub</a></li>
+        <li><a href="#" id="nav-projects" onclick="switchPage('projects-page')">Projects Showcase ✨</a></li>
+        <li id="admin-link-nav" style="display:none;"><a href="#" onclick="switchPage('admin-page')" style="color: var(--accent-green);">Admin Control Page ↗</a></li>
+        <li><a href="https://discord.gg/4svqWPJePW" target="_blank">Discord</a></li>
+      </ul>
+
+      <div class="nav-auth">
+        <span id="user-display" style="font-size: 0.85rem; color: var(--accent-green); display:none; margin-right:10px;">Admin: ROKO</span>
+        <button class="btn-action" id="auth-btn" onclick="handleAuthClick()">Login Admin</button>
+      </div>
+    </nav>
+
+    <!-- PAGE 1: PUBLIC HUB PAGE -->
+    <div id="public-page" class="page-view active">
+      <main>
+        <section class="hero">
+          <h1>Autonomous Distribution Hub</h1>
+          <p>Read-only downloads for software releases, Beast projects, and free browser games.</p>
+          
+          <div class="hero-btn-group">
+            <button class="btn-action" onclick="switchPage('projects-page')">🚀 Explore All Projects</button>
+            <a href="#dynamic-sections-wrapper" class="btn-secondary">View Downloads</a>
+          </div>
+
+          <!-- SEARCH BAR -->
+          <div class="search-container">
+            <input type="text" id="public-search" class="search-input" placeholder="🔍 Search apps, games, tools, or sections..." oninput="filterCards()" />
+          </div>
+        </section>
+
+        <!-- CONTAINER FOR DYNAMIC SECTIONS -->
+        <div id="dynamic-sections-wrapper">
+
+          <!-- BEAST PROJECTS SECTION -->
+          <div class="section-block" id="sec-beast" data-title="Beast Software & OS Suite">
+            <div class="section-header">
+              <h2 class="section-title">Beast Software & OS Suite</h2>
+              <p class="section-sub">Custom execution tools, OS kernels, and Beast AI builds.</p>
+            </div>
+
+            <div class="grid-3" id="grid-sec-beast">
+              <div class="card">
+                <div>
+                  <div class="card-header">
+                    <div class="card-tag">Desktop OS</div>
+                    <span class="file-status-missing">FILE NOT FOUND</span>
+                  </div>
+                  <h4>Beast OS Kernel</h4>
+                  <p>Custom desktop execution environment built for ultra-fast task scheduling.</p>
+                </div>
+                <button class="btn-download disabled" onclick="alert('Error: File missing on server.')">Download ISO</button>
+              </div>
+
+              <div class="card">
+                <div>
+                  <div class="card-header">
+                    <div class="card-tag">Python App</div>
+                    <span class="file-status-missing">FILE NOT FOUND</span>
+                  </div>
+                  <h4>Beast AI Interface</h4>
+                  <p>CustomTkinter local assistant application with customized workflow triggers.</p>
+                </div>
+                <button class="btn-download disabled" onclick="alert('Error: File missing on server.')">Download .EXE</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- SOFTWARE RELEASES SECTION -->
+          <div class="section-block" id="sec-software" data-title="Software Releases">
+            <div class="section-header">
+              <h2 class="section-title">Software Releases</h2>
+              <p class="section-sub">Read-only links secured against unauthorized client modifications.</p>
+            </div>
+
+            <div class="grid-3" id="grid-sec-software">
+              <div class="card">
+                <div>
+                  <div class="card-header"><div class="card-tag">Custom Builds</div></div>
+                  <h4>GD Studios Core Tools</h4>
+                  <p>System tools and custom automation execution scripts.</p>
+                </div>
+                <!-- DIRECT FILE DOWNLOAD ADDED HERE -->
+                <a href="tools.zip" download="tools.zip" class="btn-download">Download ZIP</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- FREE GAMES DIRECTORY -->
+          <div class="section-block" id="sec-games" data-title="Free Games Directory">
+            <div class="section-header">
+              <h2 class="section-title">Free Games Directory</h2>
+              <p class="section-sub">Play online directly through these verified web game engines.</p>
+            </div>
+
+            <div class="grid-3" id="grid-sec-games">
+              <div class="card">
+                <div>
+                  <div class="card-header"><div class="card-tag game">Multiplayer Canvas</div></div>
+                  <h4>Skribbl.io</h4>
+                  <p>Free online drawing and guessing game. Join or host custom rooms.</p>
+                </div>
+                <a href="https://skribbl.io/" target="_blank" class="btn-download">Play Online ↗</a>
+              </div>
+
+              <div class="card">
+                <div>
+                  <div class="card-header"><div class="card-tag game">3D Shooter</div></div>
+                  <h4>Venge.io FPS</h4>
+                  <p>Fast-paced 3D arena multiplayer shooter running natively in browser.</p>
+                </div>
+                <a href="https://venge.io/" target="_blank" class="btn-download">Play Online ↗</a>
+              </div>
+
+              <div class="card">
+                <div>
+                  <div class="card-header"><div class="card-tag game">Arcade Engine</div></div>
+                  <h4>Super Mario HTML5</h4>
+                  <p>Classic retro platformer recreated for modern browsers.</p>
+                </div>
+                <a href="https://fullscreenmario.com/" target="_blank" class="btn-download">Play Online ↗</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </main>
+    </div>
+
+    <!-- PAGE 2: COOL PROJECTS BREAKDOWN PAGE -->
+    <div id="projects-page" class="page-view">
+      <main>
+        <section class="hero">
+          <h1>Projects Architecture & Systems</h1>
+          <p>In-depth technical breakdown of all custom software and operating systems developed by GD Studios.</p>
+        </section>
+
+        <div class="grid-2">
+          
+          <!-- PROJECT CARD 1 -->
+          <div class="project-card">
+            <div class="card-header">
+              <span class="card-tag highlight">Flagship Operating System</span>
+              <span style="font-size:0.75rem; color: var(--accent-cyan); font-weight:700;">v3.0 KERNEL</span>
+            </div>
+            <h2 class="project-title">Beast OS Kernel</h2>
+            <p class="project-desc">A stripped-down, lightweight operating system kernel built specifically to maximize performance on low-resource machines.</p>
+            
+            <div class="tech-pill-container">
+              <span class="tech-pill">Low Latency</span>
+              <span class="tech-pill">Custom Shell</span>
+              <span class="tech-pill">ISO Build</span>
+            </div>
+
+            <ul class="feature-list">
+              <li>Instant boot sequencing optimized for fast execution.</li>
+              <li>Minimal RAM footprint (&lt; 500MB idle usage).</li>
+              <li>Integrated driver support for custom hardware.</li>
+              <li>Sandboxed application runner to prevent system crashes.</li>
+            </ul>
+
+            <button class="btn-download" style="width:100%;" onclick="switchPage('public-page')">Check Download Availability</button>
+          </div>
+
+          <!-- PROJECT CARD 2 -->
+          <div class="project-card">
+            <div class="card-header">
+              <span class="card-tag highlight">Python & GUI Suite</span>
+              <span style="font-size:0.75rem; color: var(--accent-purple); font-weight:700;">PYTHON 3.11</span>
+            </div>
+            <h2 class="project-title">Beast AI Desktop Assistant</h2>
+            <p class="project-desc">A custom-built desktop application designed with CustomTkinter, featuring an ultra-modern dark interface, system automation tools, and real-time processing capabilities.</p>
+            
+            <div class="tech-pill-container">
+              <span class="tech-pill">CustomTkinter</span>
+              <span class="tech-pill">Python</span>
+              <span class="tech-pill">Async Workflows</span>
+            </div>
+
+            <ul class="feature-list">
+              <li>Modern sleek dark UI inspired by futuristic cyberpunk aesthetics.</li>
+              <li>Direct desktop integration for running custom scripts and tasks.</li>
+              <li>Zero-bloat execution engineered specifically for low RAM usage.</li>
+              <li>Native file system access and fast dynamic rendering.</li>
+            </ul>
+
+            <button class="btn-download" style="width:100%;" onclick="switchPage('public-page')">Check Download Availability</button>
+          </div>
+
+          <!-- PROJECT CARD 3 -->
+          <div class="project-card">
+            <div class="card-header">
+              <span class="card-tag highlight">Web Platform</span>
+              <span style="font-size:0.75rem; color: var(--accent-green); font-weight:700;">LIVE PORTAL</span>
+            </div>
+            <h2 class="project-title">Autonomous Distribution Portal</h2>
+            <p class="project-desc">The official portal engine you are using right now! Built from scratch using raw HTML5, CSS3, and JavaScript with live client-side file blob management.</p>
+            
+            <div class="tech-pill-container">
+              <span class="tech-pill">HTML5 Blob API</span>
+              <span class="tech-pill">Glassmorphism</span>
+              <span class="tech-pill">Admin Auth</span>
+            </div>
+
+            <ul class="feature-list">
+              <li>Live real-time search filter across all software categories.</li>
+              <li>Secure password-protected Admin Control Center.</li>
+              <li>Dynamic section creator & live local file publisher.</li>
+              <li>Responsive GPU-accelerated canvas background particle system.</li>
+            </ul>
+
+            <button class="btn-download" style="width:100%;" onclick="switchPage('public-page')">Back to Public Hub</button>
+          </div>
+
+        </div>
+      </main>
+    </div>
+
+    <!-- PAGE 3: ADMIN MANAGEMENT CONTROL CENTER PAGE -->
+    <div id="admin-page" class="page-view">
+      <div class="admin-container">
+        
+        <!-- SECTION 1: CREATE NEW SECTION -->
+        <div class="admin-card-box">
+          <h3 style="color: var(--accent-cyan);">➕ 1. Create New Website Section</h3>
+          <p>Add brand-new content categories dynamically to the public portal page.</p>
+          
+          <div class="form-group">
+            <label>Section Title</label>
+            <input type="text" id="new-section-title" placeholder="e.g. Utility Tools, Software..." />
+          </div>
+          <div class="form-group">
+            <label>Section Subtitle / Description</label>
+            <input type="text" id="new-section-sub" placeholder="e.g. Direct downloads for utility packages..." />
+          </div>
+          <button class="btn-action" style="background: var(--accent-cyan);" onclick="createNewSection()">Create Section</button>
+        </div>
+
+        <!-- SECTION 2: UPLOAD LOCAL FILE TO ANY SECTION -->
+        <div class="admin-card-box">
+          <h3 style="color: var(--accent-green);">📁 2. Upload / Add File to Section</h3>
+          <p>Select a local file directly from your system to generate a direct download card in any target section.</p>
+          
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label>Target Section <span>(Select destination)</span></label>
+              <select id="target-section-select">
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>File Display Title <span>(Required)</span></label>
+              <input type="text" id="file-title" placeholder="e.g. Beast AI v2.0 Setup" />
+            </div>
+            
+            <div class="form-group">
+              <label>Tag / Category <span>(Optional)</span></label>
+              <input type="text" id="file-tag" placeholder="e.g. Python App, ZIP, ISO" />
+            </div>
+
+            <div class="form-group full-width">
+              <label>Select File <span>(Pick file from computer)</span></label>
+              <input type="file" id="local-file-input" />
+            </div>
+          </div>
+          
+          <button class="btn-action" style="background: var(--accent-green); margin-top: 0.5rem;" onclick="addFileToSection()">Publish File Card</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CREDITS FOOTER -->
+    <footer>
+      <p>© 2026 GD Studios Inc. Developed & Maintained by <strong>ROKO</strong>. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- SECURE LOGIN MODAL -->
+  <div class="modal-overlay" id="login-modal">
+    <div class="modal-box">
+      <h3 style="color:#fff; margin-bottom:0.5rem;">Admin Verification Gateway</h3>
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.2rem;">Enter administrative credentials to open the Admin Page.</p>
+      <input type="text" id="admin-user" placeholder="Username..." />
+      <input type="password" id="admin-pass" placeholder="Password..." />
+      <button class="btn-action" style="width: 100%;" onclick="attemptLogin()">Authenticate Session</button>
+    </div>
+  </div>
+
+  <script>
+    // CANVAS BACKGROUND
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height, particles = [];
+    function resize() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
+    window.addEventListener('resize', resize); resize();
+    class Particle {
+      constructor() { this.x = Math.random()*width; this.y = Math.random()*height; this.vx = (Math.random()-0.5)*0.8; this.vy = (Math.random()-0.5)*0.8; this.radius = 1.5; }
+      update() { this.x += this.vx; this.y += this.vy; if (this.x<0||this.x>width) this.vx*=-1; if (this.y<0||this.y>height) this.vy*=-1; }
+      draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2); ctx.fillStyle = 'rgba(6, 182, 212, 0.6)'; ctx.fill(); }
+    }
+    for (let i=0; i<80; i++) particles.push(new Particle());
+    function animate() {
+      ctx.clearRect(0,0,width,height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // AUTHENTICATION & NAVIGATION
+    let isAdmin = false;
+
+    function refreshSectionDropdown() {
+      const select = document.getElementById('target-section-select');
+      select.innerHTML = '';
+      
+      const allSections = document.querySelectorAll('.section-block');
+      allSections.forEach(sec => {
+        const title = sec.getAttribute('data-title') || sec.querySelector('.section-title')?.innerText || sec.id;
+        const opt = document.createElement('option');
+        opt.value = sec.id;
+        opt.innerText = title;
+        select.appendChild(opt);
+      });
+    }
+
+    function switchPage(pageId) {
+      if (pageId === 'admin-page' && !isAdmin) {
+        alert('Permission Denied: Please log in as Admin first.');
+        return;
+      }
+      if (pageId === 'admin-page') {
+        refreshSectionDropdown();
+      }
+
+      // Update Nav highlighting
+      document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+      if (pageId === 'public-page') document.getElementById('nav-public').classList.add('active');
+      if (pageId === 'projects-page') document.getElementById('nav-projects').classList.add('active');
+
+      document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function handleAuthClick() {
+      if (isAdmin) {
+        isAdmin = false;
+        document.getElementById('user-display').style.display = 'none';
+        document.getElementById('admin-link-nav').style.display = 'none';
+        document.getElementById('auth-btn').innerText = 'Login Admin';
+        switchPage('public-page');
+        alert('Admin Session Terminated.');
+      } else {
+        document.getElementById('login-modal').classList.add('active');
+      }
+    }
+
+    function attemptLogin() {
+      const u = document.getElementById('admin-user').value;
+      const p = document.getElementById('admin-pass').value;
+
+      if (u === "ROKO" && p === "Gorav@1234567890") {
+        isAdmin = true;
+        document.getElementById('login-modal').classList.remove('active');
+        document.getElementById('user-display').style.display = 'inline-block';
+        document.getElementById('admin-link-nav').style.display = 'block';
+        document.getElementById('auth-btn').innerText = 'Logout Admin';
+        document.getElementById('admin-user').value = '';
+        document.getElementById('admin-pass').value = '';
+        
+        alert('Access Granted. Opening Admin Control Page...');
+        switchPage('admin-page');
+      } else {
+        alert('Access Denied: Invalid credentials.');
+      }
+    }
+
+    // PUBLIC HUB LIVE SEARCH FUNCTIONALITY
+    function filterCards() {
+      const query = document.getElementById('public-search').value.toLowerCase();
+      const sections = document.querySelectorAll('.section-block');
+
+      sections.forEach(sec => {
+        let sectionMatches = false;
+        const cards = sec.querySelectorAll('.card');
+
+        cards.forEach(card => {
+          const text = card.innerText.toLowerCase();
+          if (text.includes(query)) {
+            card.style.display = 'flex';
+            sectionMatches = true;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        const titleText = sec.querySelector('.section-title')?.innerText.toLowerCase() || '';
+        if (titleText.includes(query)) sectionMatches = true;
+
+        sec.style.display = sectionMatches ? 'block' : 'none';
+      });
+    }
+
+    // DYNAMIC ADMIN CONTROLS
+    function createNewSection() {
+      if (!isAdmin) return;
+      const title = document.getElementById('new-section-title').value.trim();
+      const sub = document.getElementById('new-section-sub').value.trim();
+
+      if (!title) { alert('Section title is required.'); return; }
+
+      const secId = 'sec-' + Date.now();
+      const gridId = 'grid-' + secId;
+
+      const newSectionHTML = `
+        <div class="section-block" id="${secId}" data-title="${title}">
+          <div class="section-header">
+            <h2 class="section-title">${title}</h2>
+            <p class="section-sub">${sub || 'User created dynamic category.'}</p>
+          </div>
+          <div class="grid-3" id="${gridId}"></div>
+        </div>
+      `;
+
+      document.getElementById('dynamic-sections-wrapper').insertAdjacentHTML('beforeend', newSectionHTML);
+      refreshSectionDropdown();
+
+      document.getElementById('new-section-title').value = '';
+      document.getElementById('new-section-sub').value = '';
+      alert(`Section "${title}" created successfully!`);
+    }
+
+    function addFileToSection() {
+      if (!isAdmin) return;
+      const targetSecId = document.getElementById('target-section-select').value;
+      const title = document.getElementById('file-title').value.trim();
+      const tag = document.getElementById('file-tag').value.trim() || 'Download';
+      const fileInput = document.getElementById('local-file-input');
+
+      if (!title) { alert('Please enter a file display title.'); return; }
+      if (!fileInput.files || fileInput.files.length === 0) { alert('Please select a file from your computer.'); return; }
+
+      const selectedFile = fileInput.files[0];
+      const objectURL = URL.createObjectURL(selectedFile);
+      const targetGrid = document.getElementById('grid-' + targetSecId);
+
+      if (!targetGrid) { alert('Error finding section container.'); return; }
+
+      const cardHTML = `
+        <div class="card">
+          <div>
+            <div class="card-header"><div class="card-tag">${tag}</div></div>
+            <h4>${title}</h4>
+            <p>File: ${selectedFile.name} (${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB)</p>
+          </div>
+          <a href="${objectURL}" download="${selectedFile.name}" class="btn-download">Download ${selectedFile.name.split('.').pop().toUpperCase()}</a>
+        </div>
+      `;
+
+      targetGrid.insertAdjacentHTML('beforeend', cardHTML);
+
+      document.getElementById('file-title').value = '';
+      document.getElementById('file-tag').value = '';
+      fileInput.value = '';
+      alert(`File "${selectedFile.name}" published successfully!`);
+    }
+
+    // INITIAL LOAD SETUP
+    refreshSectionDropdown();
+  </script>
+</body>
+</html>
