@@ -3,716 +3,316 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GD Studios | Secure Portal & Management</title>
-  
-  <!-- GOOGLE SEARCH CONSOLE VERIFICATION TAG -->
+  <title>GD Studios — Software, Tools & Future Ideas</title>
+  <meta name="description" content="GD Studios by ROKO. Download tools, explore projects, play free games, and share future ideas." />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#020617" />
+
+  <!-- GOOGLE SEARCH CONSOLE VERIFICATION - DO NOT REMOVE -->
   <meta name="google-site-verification" content="T91vC8gBE87yXY0fDnzca20FVonogQ01sMiqzFj1ysA" />
+
+  <meta property="og:title" content="GD Studios — Software & Future Ideas" />
+  <meta property="og:description" content="Official hub for downloads, projects, and community ideas." />
+  <meta property="og:type" content="website" />
+
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"GD Studios","description":"Secure software distribution portal and Ideas Lab by GD Studios / ROKO.","publisher":{"@id":"#org"}},{"@type":"Organization","@id":"#org","name":"GD Studios","founder":{"@type":"Person","name":"ROKO"},"sameAs":["https://www.youtube.com/@Logitechnoblade","https://discord.gg/4svqWPJePW"]}]}
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
   <style>
-    :root {
-      --bg-dark: #030712;
-      --accent-cyan: #06b6d4;
-      --accent-blue: #3b82f6;
-      --accent-purple: #8b5cf6;
-      --accent-green: #10b981;
-      --accent-red: #ef4444;
-      --text-main: #f9fafb;
-      --text-muted: #9ca3af;
-      --glass-bg: rgba(15, 23, 42, 0.65);
-      --glass-border: rgba(255, 255, 255, 0.08);
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      background-color: var(--bg-dark);
-      color: var(--text-main);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      overflow-x: hidden;
-      min-height: 100vh;
-    }
-
-    #particle-canvas {
-      position: fixed; top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      z-index: 1; pointer-events: none;
-    }
-
-    .app-container {
-      position: relative; z-index: 2;
-      max-width: 1280px; margin: 0 auto; padding: 0 2rem;
-    }
-
-    /* NAVBAR */
-    nav {
-      position: sticky; top: 0; z-index: 100; height: 90px;
-      display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 1px solid var(--glass-border);
-      background: rgba(3, 7, 18, 0.75); backdrop-filter: blur(12px);
-    }
-
-    .brand-logo {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.4rem; font-weight: 700;
-      background: linear-gradient(135deg, #fff 0%, var(--accent-cyan) 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      display: flex; align-items: center; gap: 10px; cursor: pointer;
-    }
-
-    .brand-badge {
-      font-size: 0.65rem; background: rgba(6, 182, 212, 0.15);
-      color: var(--accent-cyan); padding: 4px 10px; border-radius: 20px;
-      border: 1px solid rgba(6, 182, 212, 0.3); -webkit-text-fill-color: initial;
-    }
-
-    .nav-links { display: flex; gap: 1.8rem; list-style: none; }
-    .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: 0.3s; }
-    .nav-links a:hover, .nav-links a.active { color: #fff; }
-
-    .btn-action {
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-      color: white; border: none; padding: 10px 20px;
-      border-radius: 30px; font-weight: 600; font-size: 0.85rem;
-      cursor: pointer; transition: all 0.3s ease;
-    }
-    .btn-action:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4); }
-
-    /* PAGE VIEWS */
-    .page-view { display: none; padding-bottom: 5rem; }
-    .page-view.active { display: block; }
-
-    /* HERO & SEARCH BAR */
-    .hero { padding: 4rem 0 2rem; text-align: center; max-width: 900px; margin: 0 auto; }
-    .hero h1 {
-      font-family: 'Space Grotesk', sans-serif; font-size: 3.5rem; line-height: 1.1; margin-bottom: 1.2rem;
-      background: linear-gradient(180deg, #FFFFFF 0%, #94A3B8 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .hero p { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 2rem; }
-
-    .search-container {
-      max-width: 600px; margin: 0 auto 1.5rem; position: relative;
-    }
-    .search-input {
-      width: 100%; background: rgba(15, 23, 42, 0.8);
-      border: 1px solid var(--accent-cyan); padding: 16px 20px;
-      border-radius: 30px; color: #fff; outline: none; font-size: 1rem;
-      box-shadow: 0 0 20px rgba(6, 182, 212, 0.15); transition: all 0.3s;
-    }
-    .search-input:focus {
-      box-shadow: 0 0 25px rgba(6, 182, 212, 0.35); border-color: #fff;
-    }
-
-    .hero-btn-group { display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem; }
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
-      color: #fff; padding: 12px 24px; border-radius: 30px; font-weight: 600;
-      font-size: 0.9rem; cursor: pointer; transition: all 0.3s; text-decoration: none;
-    }
-    .btn-secondary:hover { background: rgba(255, 255, 255, 0.15); border-color: var(--accent-cyan); }
-
-    /* SECTIONS */
-    .section-header { text-align: center; margin: 4rem 0 2rem; scroll-margin-top: 100px; }
-    .section-title { font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; color: #fff; }
-    .section-sub { color: var(--text-muted); font-size: 0.95rem; margin-top: 0.3rem; }
-
-    /* GRIDS & CARDS */
-    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
-
-    .card {
-      background: var(--glass-bg); border: 1px solid var(--glass-border);
-      border-radius: 20px; padding: 2rem; backdrop-filter: blur(16px);
-      display: flex; flex-direction: column; justify-content: space-between;
-      transition: all 0.3s ease;
-    }
-    .card:hover { border-color: var(--accent-cyan); transform: translateY(-4px); }
-
-    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
-    .card-tag { font-size: 0.75rem; color: var(--accent-cyan); font-weight: 700; text-transform: uppercase; }
-    .card-tag.game { color: var(--accent-purple); }
-    .card-tag.highlight { color: var(--accent-green); }
-
-    .card h4 { font-size: 1.25rem; color: #fff; margin-bottom: 0.5rem; }
-    .card p { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.5; }
-
-    .file-status-missing {
-      color: var(--accent-red); font-size: 0.75rem; font-weight: 800;
-      letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 5px;
-    }
-    .file-status-missing::before { content: '●'; font-size: 0.9rem; }
-
-    .btn-download {
-      background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
-      color: #fff; padding: 10px 16px; border-radius: 12px; font-weight: 600;
-      font-size: 0.85rem; cursor: pointer; text-align: center; text-decoration: none;
-      transition: all 0.3s; display: block;
-    }
-    .btn-download:hover { background: var(--accent-blue); border-color: var(--accent-blue); }
-    
-    .btn-download.disabled {
-      background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3);
-      color: var(--accent-red); cursor: not-allowed;
-    }
-
-    /* PROJECTS SHOWCASE STYLES */
-    .project-card {
-      background: rgba(15, 23, 42, 0.8); border: 1px solid var(--glass-border);
-      border-radius: 24px; padding: 2.5rem; backdrop-filter: blur(16px);
-      position: relative; overflow: hidden; transition: all 0.3s ease;
-    }
-    .project-card:hover { border-color: var(--accent-purple); box-shadow: 0 10px 30px rgba(139, 92, 246, 0.15); }
-    .project-card::before {
-      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
-      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
-    }
-    .project-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; color: #fff; margin-bottom: 0.8rem; }
-    .project-desc { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem; }
-    
-    .feature-list { list-style: none; margin-bottom: 2rem; }
-    .feature-list li {
-      font-size: 0.88rem; color: #e2e8f0; margin-bottom: 0.6rem;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .feature-list li::before { content: '⚡'; color: var(--accent-cyan); font-size: 0.8rem; }
-
-    .tech-pill-container { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; }
-    .tech-pill {
-      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-      color: var(--accent-cyan); font-size: 0.75rem; padding: 4px 12px; border-radius: 12px; font-weight: 600;
-    }
-
-    /* ADMIN MANAGEMENT STYLES */
-    .admin-container { max-width: 850px; margin: 3rem auto; }
-    .admin-card-box {
-      background: rgba(15, 23, 42, 0.85); border: 1px solid var(--glass-border);
-      border-radius: 24px; padding: 2.5rem; backdrop-filter: blur(20px);
-      margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-    .admin-card-box h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; margin-bottom: 0.5rem; color: #fff; }
-    .admin-card-box p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.8rem; }
-    
-    .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.2rem; }
-    .form-group { margin-bottom: 1.2rem; }
-    .form-group.full-width { grid-column: span 2; }
-    .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #e2e8f0; margin-bottom: 0.5rem; }
-    .form-group label span { font-size: 0.75rem; color: var(--text-muted); font-weight: 400; margin-left: 5px; }
-    
-    .form-group input, .form-group select {
-      width: 100%; background: #030712; border: 1px solid var(--glass-border);
-      padding: 14px 18px; border-radius: 12px; color: #fff; outline: none; font-size: 0.95rem;
-      transition: border-color 0.3s ease;
-    }
-    .form-group input[type="file"] { padding: 10px 14px; cursor: pointer; }
-    .form-group input:focus, .form-group select:focus { border-color: var(--accent-green); }
-
-    /* LOGIN MODAL */
-    .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s;
-    }
-    .modal-overlay.active { opacity: 1; pointer-events: auto; }
-    .modal-box {
-      background: #0f172a; border: 1px solid var(--glass-border);
-      border-radius: 20px; padding: 2.5rem; width: 100%; max-width: 380px; text-align: center;
-    }
-    .modal-box input {
-      width: 100%; background: #030712; border: 1px solid var(--glass-border);
-      padding: 12px; border-radius: 10px; color: #fff; margin-bottom: 1rem; outline: none;
-    }
-
-    footer {
-      border-top: 1px solid var(--glass-border); padding: 3rem 0;
-      margin-top: 4rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;
-    }
+    :root{--bg:#020617;--surface:#0f172a;--border:rgba(148,163,184,.12);--text:#f1f5f9;--muted:#94a3b8;--cyan:#22d3ee;--blue:#3b82f6;--purple:#a78bfa;--green:#34d399;--red:#f87171;--orange:#fb923c;--radius:14px}
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;overflow-x:hidden}
+    #bg-canvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+    .container{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 1.25rem}
+    .nav-wrap{position:sticky;top:0;z-index:100;background:rgba(2,6,23,.82);backdrop-filter:blur(18px);border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;justify-content:space-between;height:62px}
+    .logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.12rem;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+    .logo-badge{font-size:.58rem;font-weight:600;background:rgba(34,211,238,.12);color:var(--cyan);padding:2px 7px;border-radius:999px;border:1px solid rgba(34,211,238,.25)}
+    .nav-links{display:flex;gap:2px;list-style:none;align-items:center}
+    .nav-links a{color:var(--muted);text-decoration:none;font-size:.84rem;font-weight:500;padding:7px 12px;border-radius:8px;transition:all .15s}
+    .nav-links a:hover{color:#fff;background:rgba(255,255,255,.05)}
+    .nav-links a.active{color:#fff;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.2)}
+    .nav-right{display:flex;align-items:center;gap:8px}
+    #user-chip{font-size:.75rem;color:var(--green);font-weight:600;display:none;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .btn{border:none;cursor:pointer;font-family:inherit;font-weight:600;border-radius:10px;transition:all .15s;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+    .btn:active{transform:scale(.97)}
+    .btn-sm{padding:7px 13px;font-size:.8rem}
+    .btn-md{padding:11px 18px;font-size:.88rem}
+    .btn-lg{padding:13px 22px;font-size:.94rem}
+    .btn-primary{background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff}
+    .btn-primary:hover{filter:brightness(1.1)}
+    .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+    .btn-ghost:hover{border-color:var(--cyan);color:var(--cyan)}
+    .btn-cyan{background:var(--cyan);color:#020617}
+    .btn-green{background:var(--green);color:#020617}
+    .btn-yt{background:#ef4444;color:#fff}
+    .btn-yt:hover{background:#dc2626}
+    .btn-danger{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);color:var(--red);padding:5px 10px;font-size:.74rem;border-radius:7px}
+    .page{display:none;padding:2.2rem 0 4.5rem}
+    .page.active{display:block;animation:up .28s ease}
+    @keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .hero{text-align:center;max-width:680px;margin:0 auto 2.5rem;padding-top:1.2rem}
+    .hero-eyebrow{display:inline-flex;font-size:.76rem;font-weight:600;color:var(--cyan);background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.2);padding:4px 12px;border-radius:999px;margin-bottom:1.1rem}
+    .hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,5vw,3rem);font-weight:700;line-height:1.12;margin-bottom:.8rem;letter-spacing:-.02em}
+    .hero h1 span{background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .hero p{color:var(--muted);font-size:1.05rem;margin-bottom:1.5rem}
+    .hero-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:2.5rem}
+    .stat{background:var(--surface);padding:1.2rem 1rem;text-align:center}
+    .stat-num{font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:700}
+    .stat-label{font-size:.76rem;color:var(--muted)}
+    .search-wrap{max-width:440px;margin:0 auto 2.2rem;position:relative}
+    .search-wrap input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 16px 12px 40px;color:#fff;font-size:.9rem;outline:none}
+    .search-wrap input:focus{border-color:var(--cyan)}
+    .search-wrap::before{content:'⌕';position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:1.1rem}
+    .section{margin-bottom:2.8rem}
+    .section-head{margin-bottom:1.1rem}
+    .section-head h2{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:600}
+    .section-head p{color:var(--muted);font-size:.86rem}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;display:flex;flex-direction:column;transition:all .2s}
+    .card:hover{border-color:rgba(34,211,238,.3);transform:translateY(-2px)}
+    .card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+    .tag{font-size:.66rem;font-weight:600;text-transform:uppercase;letter-spacing:.3px;padding:3px 8px;border-radius:6px;background:rgba(34,211,238,.1);color:var(--cyan)}
+    .tag.purple{background:rgba(167,139,250,.12);color:var(--purple)}
+    .missing{font-size:.66rem;color:var(--red);font-weight:600}
+    .card h3{font-size:1.02rem;font-weight:600;margin-bottom:.3rem}
+    .card p{font-size:.84rem;color:var(--muted);flex:1;margin-bottom:1rem}
+    .card-btn{display:block;text-align:center;text-decoration:none;background:rgba(255,255,255,.04);border:1px solid var(--border);color:#fff;padding:9px;border-radius:9px;font-size:.84rem;font-weight:600}
+    .card-btn:hover{background:var(--blue);border-color:var(--blue)}
+    .card-btn.disabled{background:rgba(248,113,113,.07);border-color:rgba(248,113,113,.2);color:var(--red);cursor:not-allowed}
+    .proj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.15rem}
+    .proj{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;position:relative;overflow:hidden}
+    .proj::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--purple))}
+    .proj h3{font-family:'Space Grotesk',sans-serif;font-size:1.2rem;margin:.45rem 0}
+    .proj>p{color:var(--muted);font-size:.86rem;margin-bottom:.9rem}
+    .pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:.9rem}
+    .pill{font-size:.7rem;font-weight:600;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--cyan)}
+    .feat{list-style:none;margin-bottom:1.1rem}
+    .feat li{font-size:.84rem;color:#cbd5e1;margin-bottom:.35rem;display:flex;gap:7px}
+    .feat li::before{content:'→';color:var(--cyan)}
+    .auth-wrap{max-width:400px;margin:2rem auto 0;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:2rem 1.75rem}
+    .auth-wrap h2{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;text-align:center;margin-bottom:.35rem}
+    .auth-wrap .sub{text-align:center;color:var(--muted);font-size:.88rem;margin-bottom:1.5rem}
+    .auth-tabs{display:flex;gap:6px;margin-bottom:1.3rem}
+    .auth-tabs button{flex:1;padding:9px;border-radius:9px;border:1px solid var(--border);background:transparent;color:var(--muted);font-weight:600;font-size:.85rem;cursor:pointer}
+    .auth-tabs button.on{background:rgba(34,211,238,.1);border-color:rgba(34,211,238,.35);color:var(--cyan)}
+    .field{margin-bottom:.9rem}
+    .field label{display:block;font-size:.8rem;font-weight:600;margin-bottom:.3rem;color:#e2e8f0}
+    .field input,.field textarea,.field select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:#fff;font-size:.9rem;font-family:inherit;outline:none}
+    .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--cyan)}
+    .field textarea{min-height:85px;resize:vertical}
+    .auth-note{font-size:.78rem;color:var(--muted);text-align:center;margin-top:1rem;line-height:1.45}
+    .verify-box{background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.2);border-radius:12px;padding:1rem;margin-bottom:1rem;text-align:center}
+    .verify-box p{font-size:.85rem;color:#a5f3fc;margin-bottom:.6rem}
+    .verify-code{font-family:'Space Grotesk',sans-serif;font-size:1.6rem;font-weight:700;letter-spacing:6px;color:var(--cyan);margin:.5rem 0}
+    .yt-bar{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.22);border-radius:14px;padding:1.2rem 1.4rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.8rem}
+    .yt-bar h3{font-size:1.02rem}
+    .yt-bar p{font-size:.84rem;color:var(--muted);margin:0}
+    .idea-form{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.4rem;margin-bottom:1.8rem}
+    .idea-form h3{font-size:1.02rem;margin-bottom:.25rem;color:var(--purple)}
+    .idea-form>p{font-size:.84rem;color:var(--muted);margin-bottom:1rem}
+    .idea{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.25rem;margin-bottom:1rem}
+    .idea-meta{display:flex;gap:10px;align-items:center;margin-bottom:.35rem;font-size:.76rem}
+    .idea-meta .author{color:var(--cyan);font-weight:600}
+    .idea-meta .date{color:var(--muted)}
+    .idea-meta .votes{margin-left:auto;display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.04);border:1px solid var(--border);padding:3px 8px;border-radius:7px;cursor:pointer;font-weight:600;font-size:.76rem;color:var(--muted)}
+    .idea-meta .votes.up,.idea-meta .votes:hover{color:var(--cyan);border-color:rgba(34,211,238,.3)}
+    .idea h4{font-size:1.08rem;margin-bottom:.35rem}
+    .idea .body{font-size:.88rem;color:#cbd5e1;margin-bottom:.9rem;white-space:pre-wrap}
+    .comments{border-top:1px solid var(--border);padding-top:.85rem}
+    .comments-label{font-size:.78rem;color:var(--muted);font-weight:600;margin-bottom:.55rem}
+    .comment{background:rgba(0,0,0,.22);border-radius:10px;padding:.65rem .85rem;margin-bottom:.45rem}
+    .comment .c-meta{font-size:.72rem;margin-bottom:.2rem}
+    .comment .c-author{color:var(--green);font-weight:600}
+    .comment .c-date{color:var(--muted);margin-left:6px}
+    .comment .c-text{font-size:.84rem;color:#e2e8f0}
+    .add-c{display:flex;gap:8px;margin-top:.55rem}
+    .add-c input{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:8px 11px;color:#fff;font-size:.84rem;outline:none}
+    .add-c input:focus{border-color:var(--cyan)}
+    .add-c button{padding:8px 13px;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.25);color:var(--cyan);border-radius:9px;font-weight:600;font-size:.8rem;cursor:pointer}
+    .login-to-comment{font-size:.84rem;color:var(--muted);text-align:center;padding:.7rem;background:rgba(0,0,0,.2);border-radius:10px;margin-top:.5rem}
+    .login-to-comment a{color:var(--cyan);cursor:pointer;text-decoration:underline}
+    .admin-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.4rem;margin-bottom:1.2rem}
+    .admin-box h3{font-size:1.08rem;margin-bottom:.25rem}
+    .admin-box>p{font-size:.84rem;color:var(--muted);margin-bottom:1rem}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+    .row .full{grid-column:1/-1}
+    .toggle{display:flex;gap:8px;margin-bottom:.85rem}
+    .toggle button{flex:1;padding:9px;border-radius:9px;background:rgba(255,255,255,.03);border:1px solid var(--border);color:var(--muted);font-weight:600;font-size:.84rem;cursor:pointer}
+    .toggle button.on{background:rgba(34,211,238,.1);border-color:rgba(34,211,238,.35);color:var(--cyan)}
+    .tip{background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.18);border-radius:10px;padding:10px 12px;font-size:.78rem;color:#a5f3fc;margin-bottom:.85rem;line-height:1.5}
+    .tip strong{color:#fff}
+    .manage-item{display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.22);border:1px solid var(--border);border-radius:10px;padding:9px 12px;margin-bottom:7px;gap:10px}
+    .manage-item .info{flex:1;min-width:0}
+    .manage-item .t{font-size:.86rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .manage-item .m{font-size:.72rem;color:var(--muted)}
+    footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;color:var(--muted);font-size:.82rem;position:relative;z-index:1}
+    footer a{color:var(--cyan);text-decoration:none}
+    .footer-links{display:flex;gap:1.1rem;justify-content:center;margin-bottom:.7rem;flex-wrap:wrap}
+    .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface);border:1px solid var(--border);color:#fff;padding:10px 16px;border-radius:10px;font-size:.85rem;font-weight:500;z-index:300;opacity:0;transition:all .25s;pointer-events:none}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .toast.ok{border-color:rgba(52,211,153,.4)}
+    .toast.err{border-color:rgba(248,113,113,.4)}
+    .admin-only{display:none}
+    body.admin .admin-only{display:block}
+    @media(max-width:720px){.nav-links{display:none}.stats{grid-template-columns:1fr 1fr 1fr}.row{grid-template-columns:1fr}.yt-bar{flex-direction:column;text-align:center}.hero-actions{flex-direction:column}.hero-actions .btn{width:100%}}
   </style>
 </head>
 <body>
-
-  <canvas id="particle-canvas"></canvas>
-
-  <div class="app-container">
-    <nav>
-      <div class="brand-logo" onclick="switchPage('public-page')">GD STUDIOS <span class="brand-badge">V5.2</span></div>
-      
-      <ul class="nav-links">
-        <li><a href="#" id="nav-public" class="active" onclick="switchPage('public-page')">Public Hub</a></li>
-        <li><a href="#" id="nav-projects" onclick="switchPage('projects-page')">Projects Showcase ✨</a></li>
-        <li id="admin-link-nav" style="display:none;"><a href="#" onclick="switchPage('admin-page')" style="color: var(--accent-green);">Admin Control Page ↗</a></li>
-        <li><a href="https://discord.gg/4svqWPJePW" target="_blank">Discord</a></li>
-      </ul>
-
-      <div class="nav-auth">
-        <span id="user-display" style="font-size: 0.85rem; color: var(--accent-green); display:none; margin-right:10px;">Admin: ROKO</span>
-        <button class="btn-action" id="auth-btn" onclick="handleAuthClick()">Login Admin</button>
-      </div>
-    </nav>
-
-    <!-- PAGE 1: PUBLIC HUB PAGE -->
-    <div id="public-page" class="page-view active">
-      <main>
-        <section class="hero">
-          <h1>Autonomous Distribution Hub</h1>
-          <p>Read-only downloads for software releases, Beast projects, and free browser games.</p>
-          
-          <div class="hero-btn-group">
-            <button class="btn-action" onclick="switchPage('projects-page')">🚀 Explore All Projects</button>
-            <a href="#dynamic-sections-wrapper" class="btn-secondary">View Downloads</a>
-          </div>
-
-          <!-- SEARCH BAR -->
-          <div class="search-container">
-            <input type="text" id="public-search" class="search-input" placeholder="🔍 Search apps, games, tools, or sections..." oninput="filterCards()" />
-          </div>
-        </section>
-
-        <!-- CONTAINER FOR DYNAMIC SECTIONS -->
-        <div id="dynamic-sections-wrapper">
-
-          <!-- BEAST PROJECTS SECTION -->
-          <div class="section-block" id="sec-beast" data-title="Beast Software & OS Suite">
-            <div class="section-header">
-              <h2 class="section-title">Beast Software & OS Suite</h2>
-              <p class="section-sub">Custom execution tools, OS kernels, and Beast AI builds.</p>
-            </div>
-
-            <div class="grid-3" id="grid-sec-beast">
-              <div class="card">
-                <div>
-                  <div class="card-header">
-                    <div class="card-tag">Desktop OS</div>
-                    <span class="file-status-missing">FILE NOT FOUND</span>
-                  </div>
-                  <h4>Beast OS Kernel</h4>
-                  <p>Custom desktop execution environment built for ultra-fast task scheduling.</p>
-                </div>
-                <button class="btn-download disabled" onclick="alert('Error: File missing on server.')">Download ISO</button>
-              </div>
-
-              <div class="card">
-                <div>
-                  <div class="card-header">
-                    <div class="card-tag">Python App</div>
-                    <span class="file-status-missing">FILE NOT FOUND</span>
-                  </div>
-                  <h4>Beast AI Interface</h4>
-                  <p>CustomTkinter local assistant application with customized workflow triggers.</p>
-                </div>
-                <button class="btn-download disabled" onclick="alert('Error: File missing on server.')">Download .EXE</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- SOFTWARE RELEASES SECTION -->
-          <div class="section-block" id="sec-software" data-title="Software Releases">
-            <div class="section-header">
-              <h2 class="section-title">Software Releases</h2>
-              <p class="section-sub">Read-only links secured against unauthorized client modifications.</p>
-            </div>
-
-            <div class="grid-3" id="grid-sec-software">
-              <div class="card">
-                <div>
-                  <div class="card-header"><div class="card-tag">Custom Builds</div></div>
-                  <h4>GD Studios Core Tools</h4>
-                  <p>System tools and custom automation execution scripts.</p>
-                </div>
-                <!-- DIRECT FILE DOWNLOAD ADDED HERE -->
-                <a href="tools.zip" download="tools.zip" class="btn-download">Download ZIP</a>
-              </div>
-            </div>
-          </div>
-
-          <!-- FREE GAMES DIRECTORY -->
-          <div class="section-block" id="sec-games" data-title="Free Games Directory">
-            <div class="section-header">
-              <h2 class="section-title">Free Games Directory</h2>
-              <p class="section-sub">Play online directly through these verified web game engines.</p>
-            </div>
-
-            <div class="grid-3" id="grid-sec-games">
-              <div class="card">
-                <div>
-                  <div class="card-header"><div class="card-tag game">Multiplayer Canvas</div></div>
-                  <h4>Skribbl.io</h4>
-                  <p>Free online drawing and guessing game. Join or host custom rooms.</p>
-                </div>
-                <a href="https://skribbl.io/" target="_blank" class="btn-download">Play Online ↗</a>
-              </div>
-
-              <div class="card">
-                <div>
-                  <div class="card-header"><div class="card-tag game">3D Shooter</div></div>
-                  <h4>Venge.io FPS</h4>
-                  <p>Fast-paced 3D arena multiplayer shooter running natively in browser.</p>
-                </div>
-                <a href="https://venge.io/" target="_blank" class="btn-download">Play Online ↗</a>
-              </div>
-
-              <div class="card">
-                <div>
-                  <div class="card-header"><div class="card-tag game">Arcade Engine</div></div>
-                  <h4>Super Mario HTML5</h4>
-                  <p>Classic retro platformer recreated for modern browsers.</p>
-                </div>
-                <a href="https://fullscreenmario.com/" target="_blank" class="btn-download">Play Online ↗</a>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </main>
-    </div>
-
-    <!-- PAGE 2: COOL PROJECTS BREAKDOWN PAGE -->
-    <div id="projects-page" class="page-view">
-      <main>
-        <section class="hero">
-          <h1>Projects Architecture & Systems</h1>
-          <p>In-depth technical breakdown of all custom software and operating systems developed by GD Studios.</p>
-        </section>
-
-        <div class="grid-2">
-          
-          <!-- PROJECT CARD 1 -->
-          <div class="project-card">
-            <div class="card-header">
-              <span class="card-tag highlight">Flagship Operating System</span>
-              <span style="font-size:0.75rem; color: var(--accent-cyan); font-weight:700;">v3.0 KERNEL</span>
-            </div>
-            <h2 class="project-title">Beast OS Kernel</h2>
-            <p class="project-desc">A stripped-down, lightweight operating system kernel built specifically to maximize performance on low-resource machines.</p>
-            
-            <div class="tech-pill-container">
-              <span class="tech-pill">Low Latency</span>
-              <span class="tech-pill">Custom Shell</span>
-              <span class="tech-pill">ISO Build</span>
-            </div>
-
-            <ul class="feature-list">
-              <li>Instant boot sequencing optimized for fast execution.</li>
-              <li>Minimal RAM footprint (&lt; 500MB idle usage).</li>
-              <li>Integrated driver support for custom hardware.</li>
-              <li>Sandboxed application runner to prevent system crashes.</li>
-            </ul>
-
-            <button class="btn-download" style="width:100%;" onclick="switchPage('public-page')">Check Download Availability</button>
-          </div>
-
-          <!-- PROJECT CARD 2 -->
-          <div class="project-card">
-            <div class="card-header">
-              <span class="card-tag highlight">Python & GUI Suite</span>
-              <span style="font-size:0.75rem; color: var(--accent-purple); font-weight:700;">PYTHON 3.11</span>
-            </div>
-            <h2 class="project-title">Beast AI Desktop Assistant</h2>
-            <p class="project-desc">A custom-built desktop application designed with CustomTkinter, featuring an ultra-modern dark interface, system automation tools, and real-time processing capabilities.</p>
-            
-            <div class="tech-pill-container">
-              <span class="tech-pill">CustomTkinter</span>
-              <span class="tech-pill">Python</span>
-              <span class="tech-pill">Async Workflows</span>
-            </div>
-
-            <ul class="feature-list">
-              <li>Modern sleek dark UI inspired by futuristic cyberpunk aesthetics.</li>
-              <li>Direct desktop integration for running custom scripts and tasks.</li>
-              <li>Zero-bloat execution engineered specifically for low RAM usage.</li>
-              <li>Native file system access and fast dynamic rendering.</li>
-            </ul>
-
-            <button class="btn-download" style="width:100%;" onclick="switchPage('public-page')">Check Download Availability</button>
-          </div>
-
-          <!-- PROJECT CARD 3 -->
-          <div class="project-card">
-            <div class="card-header">
-              <span class="card-tag highlight">Web Platform</span>
-              <span style="font-size:0.75rem; color: var(--accent-green); font-weight:700;">LIVE PORTAL</span>
-            </div>
-            <h2 class="project-title">Autonomous Distribution Portal</h2>
-            <p class="project-desc">The official portal engine you are using right now! Built from scratch using raw HTML5, CSS3, and JavaScript with live client-side file blob management.</p>
-            
-            <div class="tech-pill-container">
-              <span class="tech-pill">HTML5 Blob API</span>
-              <span class="tech-pill">Glassmorphism</span>
-              <span class="tech-pill">Admin Auth</span>
-            </div>
-
-            <ul class="feature-list">
-              <li>Live real-time search filter across all software categories.</li>
-              <li>Secure password-protected Admin Control Center.</li>
-              <li>Dynamic section creator & live local file publisher.</li>
-              <li>Responsive GPU-accelerated canvas background particle system.</li>
-            </ul>
-
-            <button class="btn-download" style="width:100%;" onclick="switchPage('public-page')">Back to Public Hub</button>
-          </div>
-
-        </div>
-      </main>
-    </div>
-
-    <!-- PAGE 3: ADMIN MANAGEMENT CONTROL CENTER PAGE -->
-    <div id="admin-page" class="page-view">
-      <div class="admin-container">
-        
-        <!-- SECTION 1: CREATE NEW SECTION -->
-        <div class="admin-card-box">
-          <h3 style="color: var(--accent-cyan);">➕ 1. Create New Website Section</h3>
-          <p>Add brand-new content categories dynamically to the public portal page.</p>
-          
-          <div class="form-group">
-            <label>Section Title</label>
-            <input type="text" id="new-section-title" placeholder="e.g. Utility Tools, Software..." />
-          </div>
-          <div class="form-group">
-            <label>Section Subtitle / Description</label>
-            <input type="text" id="new-section-sub" placeholder="e.g. Direct downloads for utility packages..." />
-          </div>
-          <button class="btn-action" style="background: var(--accent-cyan);" onclick="createNewSection()">Create Section</button>
-        </div>
-
-        <!-- SECTION 2: UPLOAD LOCAL FILE TO ANY SECTION -->
-        <div class="admin-card-box">
-          <h3 style="color: var(--accent-green);">📁 2. Upload / Add File to Section</h3>
-          <p>Select a local file directly from your system to generate a direct download card in any target section.</p>
-          
-          <div class="form-grid">
-            <div class="form-group full-width">
-              <label>Target Section <span>(Select destination)</span></label>
-              <select id="target-section-select">
-                <!-- Dynamically populated -->
-              </select>
-            </div>
-            
-            <div class="form-group">
-              <label>File Display Title <span>(Required)</span></label>
-              <input type="text" id="file-title" placeholder="e.g. Beast AI v2.0 Setup" />
-            </div>
-            
-            <div class="form-group">
-              <label>Tag / Category <span>(Optional)</span></label>
-              <input type="text" id="file-tag" placeholder="e.g. Python App, ZIP, ISO" />
-            </div>
-
-            <div class="form-group full-width">
-              <label>Select File <span>(Pick file from computer)</span></label>
-              <input type="file" id="local-file-input" />
-            </div>
-          </div>
-          
-          <button class="btn-action" style="background: var(--accent-green); margin-top: 0.5rem;" onclick="addFileToSection()">Publish File Card</button>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- CREDITS FOOTER -->
-    <footer>
-      <p>© 2026 GD Studios Inc. Developed & Maintained by <strong>ROKO</strong>. All rights reserved.</p>
-    </footer>
-  </div>
-
-  <!-- SECURE LOGIN MODAL -->
-  <div class="modal-overlay" id="login-modal">
-    <div class="modal-box">
-      <h3 style="color:#fff; margin-bottom:0.5rem;">Admin Verification Gateway</h3>
-      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.2rem;">Enter administrative credentials to open the Admin Page.</p>
-      <input type="text" id="admin-user" placeholder="Username..." />
-      <input type="password" id="admin-pass" placeholder="Password..." />
-      <button class="btn-action" style="width: 100%;" onclick="attemptLogin()">Authenticate Session</button>
+<canvas id="bg-canvas"></canvas>
+<div class="nav-wrap">
+  <div class="container nav">
+    <div class="logo" onclick="go('home')">GD STUDIOS <span class="logo-badge">V10</span></div>
+    <ul class="nav-links">
+      <li><a href="#" id="n-home" class="active" onclick="go('home')">Hub</a></li>
+      <li><a href="#" id="n-projects" onclick="go('projects')">Projects</a></li>
+      <li><a href="#" id="n-ideas" onclick="go('ideas')">Ideas Lab</a></li>
+      <li id="n-admin-li" style="display:none"><a href="#" id="n-admin" onclick="go('admin')">Admin</a></li>
+      <li><a href="https://discord.gg/4svqWPJePW" target="_blank" rel="noopener">Discord</a></li>
+    </ul>
+    <div class="nav-right">
+      <span id="user-chip"></span>
+      <button class="btn btn-sm btn-ghost" id="auth-btn" onclick="authNav()">Login</button>
     </div>
   </div>
+</div>
+<div class="container">
+  <div id="page-home" class="page active">
+    <div class="hero">
+      <div class="hero-eyebrow">✦ Independent software studio</div>
+      <h1>Build. Ship. <span>Explore.</span></h1>
+      <p>Downloads, experiments, free games, and a public board for future ideas.</p>
+      <div class="hero-actions">
+        <button class="btn btn-lg btn-primary" onclick="go('ideas')">Open Ideas Lab</button>
+        <button class="btn btn-lg btn-ghost" onclick="go('projects')">View Projects</button>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="stat-num" id="stat-cards">0</div><div class="stat-label">Files</div></div>
+      <div class="stat"><div class="stat-num" id="stat-ideas">0</div><div class="stat-label">Ideas</div></div>
+      <div class="stat"><div class="stat-num">3</div><div class="stat-label">Projects</div></div>
+    </div>
+    <div class="search-wrap"><input type="text" id="search" placeholder="Search downloads..." oninput="filterCards()" /></div>
+    <div id="sections"></div>
+  </div>
+  <div id="page-projects" class="page">
+    <div class="hero"><h1>Projects</h1><p>Core systems built by GD Studios.</p></div>
+    <div class="proj-grid">
+      <div class="proj"><span class="tag">Flagship</span><h3>Beast OS Kernel</h3><p>Lightweight kernel for low-resource machines.</p><div class="pills"><span class="pill">Low Latency</span><span class="pill">Custom Shell</span><span class="pill">ISO</span></div><ul class="feat"><li>Fast boot</li><li>Under 500MB idle</li><li>Sandboxed runner</li></ul><button class="card-btn" onclick="go('home')">Check Downloads</button></div>
+      <div class="proj"><span class="tag purple">Python</span><h3>Beast AI Assistant</h3><p>CustomTkinter desktop app with automation tools.</p><div class="pills"><span class="pill">CustomTkinter</span><span class="pill">Python</span><span class="pill">Async</span></div><ul class="feat"><li>Dark cyberpunk UI</li><li>Script automation</li><li>Native FS access</li></ul><button class="card-btn" onclick="go('home')">Check Downloads</button></div>
+      <div class="proj"><span class="tag">Web</span><h3>This Portal</h3><p>Distribution hub with Ideas Lab and admin controls.</p><div class="pills"><span class="pill">localStorage</span><span class="pill">Auth</span><span class="pill">Comments</span></div><ul class="feat"><li>User login + verify</li><li>Idea voting</li><li>Admin file management</li></ul><button class="card-btn" onclick="go('home')">Back to Hub</button></div>
+    </div>
+  </div>
+  <div id="page-ideas" class="page">
+    <div class="hero"><h1>Ideas Lab</h1><p>Drop concepts. Vote. Comment (login required).</p></div>
+    <div class="yt-bar"><div><h3>Watch the process</h3><p>Builds and experiments on YouTube.</p></div><a href="https://www.youtube.com/@Logitechnoblade" target="_blank" rel="noopener" class="btn btn-md btn-yt">Subscribe @Logitechnoblade</a></div>
+    <div class="idea-form"><h3>Share a future idea</h3><p>Anyone can post. Only verified users can comment.</p><div class="field"><label>Name</label><input id="idea-author" placeholder="Your name" maxlength="40" /></div><div class="field"><label>Title</label><input id="idea-title" placeholder="Idea title" maxlength="120" /></div><div class="field"><label>Description</label><textarea id="idea-body" placeholder="Describe the idea..."></textarea></div><button class="btn btn-md btn-primary" onclick="postIdea()">Post Idea</button></div>
+    <div id="ideas-list"></div>
+  </div>
+  <div id="page-login" class="page">
+    <div class="auth-wrap">
+      <h2 id="auth-title">Login</h2>
+      <p class="sub" id="auth-sub">Sign in with your Gmail to comment on ideas.</p>
+      <div class="auth-tabs"><button class="on" id="tab-login" onclick="setAuthTab('login')">Login</button><button id="tab-register" onclick="setAuthTab('register')">Register</button></div>
+      <div id="auth-form">
+        <div class="field"><label>Gmail address</label><input id="auth-email" type="email" placeholder="you@gmail.com" autocomplete="email" /></div>
+        <div class="field"><label>Display name</label><input id="auth-name" type="text" placeholder="How others see you" maxlength="30" /></div>
+        <div class="field" id="pass-field"><label>Password</label><input id="auth-pass" type="password" placeholder="Min 6 characters" autocomplete="new-password" /></div>
+        <button class="btn btn-md btn-primary" style="width:100%" id="auth-submit" onclick="handleAuth()">Continue</button>
+      </div>
+      <div id="verify-step" style="display:none">
+        <div class="verify-box"><p>We generated a verification code for your Gmail.</p><div class="verify-code" id="show-code">------</div><p style="font-size:.78rem;color:var(--muted)">In a real system this is emailed. Enter it below to verify.</p></div>
+        <div class="field"><label>Enter verification code</label><input id="verify-input" type="text" placeholder="6-digit code" maxlength="6" /></div>
+        <button class="btn btn-md btn-cyan" style="width:100%" onclick="verifyEmail()">Verify Gmail</button>
+      </div>
+      <p class="auth-note">Only Gmail addresses are accepted.<br>Verified users can comment on the Ideas Lab.<br><br>Admin: use username <strong>ROKO</strong> + your admin password.</p>
+    </div>
+  </div>
+  <div id="page-admin" class="page">
+    <div class="admin-box"><h3 style="color:var(--cyan)">Create Section</h3><p>Add a new category on the public hub.</p><div class="field"><label>Title</label><input id="sec-title" placeholder="Utility Tools..." /></div><div class="field"><label>Subtitle</label><input id="sec-sub" placeholder="Optional" /></div><button class="btn btn-md btn-cyan" onclick="createSection()">Create</button></div>
+    <div class="admin-box"><h3 style="color:var(--green)">Add Download Card</h3><p>Add files via external URL or local upload. Users download from Hub cards.</p><div class="toggle"><button class="on" id="mode-url" onclick="setMode('url')">External URL</button><button id="mode-file" onclick="setMode('file')">Local File</button></div><div class="tip" id="drive-tip"><strong>Tip:</strong> Paste any direct download link (Drive file, Dropbox, etc.). Single Drive file links auto-convert.</div><div class="row"><div class="field full"><label>Section</label><select id="target-sec"></select></div><div class="field"><label>Title</label><input id="file-title" placeholder="Beast AI v2.0" /></div><div class="field"><label>Tag</label><input id="file-tag" placeholder="Python, ZIP..." /></div></div><div class="field" id="url-group"><label>URL</label><input id="file-url" type="url" placeholder="https://..." /></div><div class="field" id="file-group" style="display:none"><label>File</label><input id="file-input" type="file" /></div><div class="field"><label>Description</label><input id="file-desc" placeholder="Short description" /></div><button class="btn btn-md btn-green" onclick="addCard()">Publish Card</button></div>
+    <div class="admin-box"><h3 style="color:var(--orange)">Manage Cards</h3><p>Remove cards you no longer want.</p><div id="manage-list"></div></div>
+  </div>
+</div>
+<footer>
+  <div class="container">
+    <div class="footer-links">
+      <a href="https://www.youtube.com/@Logitechnoblade" target="_blank" rel="noopener">YouTube</a>
+      <a href="https://discord.gg/4svqWPJePW" target="_blank" rel="noopener">Discord</a>
+      <a href="#" onclick="go('ideas')">Ideas Lab</a>
+      <a href="#" onclick="go('login')">Login</a>
+    </div>
+    <p>© 2026 GD Studios · Built by <strong style="color:#cbd5e1">ROKO</strong></p>
+  </div>
+</footer>
+<div class="toast" id="toast"></div>
+<script>
+const canvas=document.getElementById('bg-canvas'),ctx=canvas.getContext('2d');
+let W,H,particles=[],mouse={x:-999,y:-999};
+function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight}
+addEventListener('resize',resize);resize();
+addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});
+class P{constructor(){this.x=Math.random()*W;this.y=Math.random()*H;this.vx=(Math.random()-.5)*.4;this.vy=(Math.random()-.5)*.4;this.r=Math.random()*1.4+.4}
+update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>W)this.vx*=-1;if(this.y<0||this.y>H)this.vy*=-1;const dx=this.x-mouse.x,dy=this.y-mouse.y,d=Math.sqrt(dx*dx+dy*dy);if(d<120){this.vx+=dx/d*.02;this.vy+=dy/d*.02}}
+draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle='rgba(34,211,238,.45)';ctx.fill()}}
+for(let i=0;i<70;i++)particles.push(new P());
+function loop(){ctx.clearRect(0,0,W,H);particles.forEach(p=>{p.update();p.draw()});for(let i=0;i<particles.length;i++)for(let j=i+1;j<particles.length;j++){const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<100){ctx.beginPath();ctx.strokeStyle=`rgba(34,211,238,${.12*(1-d/100)})`;ctx.lineWidth=.5;ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.stroke()}}requestAnimationFrame(loop)}
+loop();
 
-  <script>
-    // CANVAS BACKGROUND
-    const canvas = document.getElementById('particle-canvas');
-    const ctx = canvas.getContext('2d');
-    let width, height, particles = [];
-    function resize() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
-    window.addEventListener('resize', resize); resize();
-    class Particle {
-      constructor() { this.x = Math.random()*width; this.y = Math.random()*height; this.vx = (Math.random()-0.5)*0.8; this.vy = (Math.random()-0.5)*0.8; this.radius = 1.5; }
-      update() { this.x += this.vx; this.y += this.vy; if (this.x<0||this.x>width) this.vx*=-1; if (this.y<0||this.y>height) this.vy*=-1; }
-      draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2); ctx.fillStyle = 'rgba(6, 182, 212, 0.6)'; ctx.fill(); }
-    }
-    for (let i=0; i<80; i++) particles.push(new Particle());
-    function animate() {
-      ctx.clearRect(0,0,width,height);
-      particles.forEach(p => { p.update(); p.draw(); });
-      requestAnimationFrame(animate);
-    }
-    animate();
+let isAdmin=false,mode='url',authTab='login',pendingUser=null,currentUser=null;
+const KEY='gd_v10_data',IDEAS_KEY='gd_v10_ideas',VOTES_KEY='gd_v10_votes',USERS_KEY='gd_v10_users',SESSION_KEY='gd_v10_session';
+const DEFAULT={sections:[{id:'beast',title:'Beast Software & OS',subtitle:'Kernels, tools, and AI builds.',cards:[{id:'c1',title:'Beast OS Kernel',tag:'Desktop OS',desc:'Ultra-fast custom execution environment.',url:null,missing:true},{id:'c2',title:'Beast AI Interface',tag:'Python',desc:'CustomTkinter local assistant.',url:null,missing:true}]},{id:'software',title:'Software Releases',subtitle:'Tools and packages.',cards:[{id:'c3',title:'GD Studios Core Tools',tag:'Custom Builds',desc:'System tools and automation scripts.',url:null,missing:true}]},{id:'games',title:'Free Games',subtitle:'Play in the browser.',cards:[{id:'c4',title:'Skribbl.io',tag:'Multiplayer',desc:'Drawing and guessing game.',url:'https://skribbl.io/',external:true},{id:'c5',title:'Venge.io',tag:'FPS',desc:'3D arena shooter.',url:'https://venge.io/',external:true},{id:'c6',title:'Super Mario HTML5',tag:'Arcade',desc:'Classic platformer.',url:'https://fullscreenmario.com/',external:true}]}]};
+function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch{}return JSON.parse(JSON.stringify(DEFAULT))}
+function save(d){localStorage.setItem(KEY,JSON.stringify(d))}
+function loadIdeas(){try{const r=localStorage.getItem(IDEAS_KEY);if(r)return JSON.parse(r)}catch{}return[{id:'i1',author:'ROKO',title:'Offline AI for low-end laptops',body:'Tiny local LLM that runs offline under 4GB RAM.',date:Date.now()-172800000,votes:5,comments:[]},{id:'i2',author:'ROKO',title:'Browser desktop environment',body:'Full OS-like experience inside a browser tab.',date:Date.now()-400000000,votes:3,comments:[]}]}
+function saveIdeas(d){localStorage.setItem(IDEAS_KEY,JSON.stringify(d))}
+function loadVotes(){try{const r=localStorage.getItem(VOTES_KEY);if(r)return JSON.parse(r)}catch{}return{}}
+function saveVotes(v){localStorage.setItem(VOTES_KEY,JSON.stringify(v))}
+function loadUsers(){try{const r=localStorage.getItem(USERS_KEY);if(r)return JSON.parse(r)}catch{}return{}}
+function saveUsers(u){localStorage.setItem(USERS_KEY,JSON.stringify(u))}
+let data=load(),ideas=loadIdeas(),votes=loadVotes(),users=loadUsers();
+try{const s=localStorage.getItem(SESSION_KEY);if(s){const sess=JSON.parse(s);if(sess.email&&users[sess.email]?.verified)currentUser=sess}}catch{}
 
-    // AUTHENTICATION & NAVIGATION
-    let isAdmin = false;
+function render(){const root=document.getElementById('sections');root.innerHTML='';let n=0;data.sections.forEach(sec=>{n+=sec.cards.length;const el=document.createElement('div');el.className='section';el.dataset.title=sec.title;el.innerHTML=`<div class="section-head"><h2>${esc(sec.title)}</h2><p>${esc(sec.subtitle||'')}</p></div><div class="grid"></div>`;root.appendChild(el);const grid=el.querySelector('.grid');sec.cards.forEach(c=>grid.appendChild(makeCard(c,sec.id)))});document.getElementById('stat-cards').textContent=n;document.getElementById('stat-ideas').textContent=ideas.length;refreshSelect();renderManage();updateUserUI()}
+function makeCard(c,secId){const d=document.createElement('div');d.className='card';const missing=c.missing||!c.url;const isGame=/multiplayer|fps|arcade|game/i.test(c.tag||'');let btn='';if(missing)btn=`<button class="card-btn disabled" onclick="toast('File not available','err')">File Missing</button>`;else{let label=c.external&&isGame?'Play Online ↗':c.external?'Open Link ↗':'Download';btn=`<a class="card-btn" href="${attr(c.url)}" ${c.external?'target="_blank" rel="noopener"':'download'}>${label}</a>`}d.innerHTML=`<div class="card-top"><span class="tag ${isGame?'purple':''}">${esc(c.tag||'File')}</span>${missing?'<span class="missing">MISSING</span>':''}</div><h3>${esc(c.title)}</h3><p>${esc(c.desc||'')}</p>${btn}<div class="admin-only" style="margin-top:8px"><button class="btn btn-danger" onclick="delCard('${secId}','${c.id}')">Delete</button></div>`;return d}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function attr(s){return String(s||'').replace(/"/g,'&quot;')}
 
-    function refreshSectionDropdown() {
-      const select = document.getElementById('target-section-select');
-      select.innerHTML = '';
-      
-      const allSections = document.querySelectorAll('.section-block');
-      allSections.forEach(sec => {
-        const title = sec.getAttribute('data-title') || sec.querySelector('.section-title')?.innerText || sec.id;
-        const opt = document.createElement('option');
-        opt.value = sec.id;
-        opt.innerText = title;
-        select.appendChild(opt);
-      });
-    }
+function updateUserUI(){const chip=document.getElementById('user-chip'),btn=document.getElementById('auth-btn');if(currentUser&&currentUser.verified){chip.style.display='inline';chip.textContent=currentUser.name||currentUser.email.split('@')[0];btn.textContent='Logout'}else if(isAdmin){chip.style.display='inline';chip.textContent='Admin · ROKO';btn.textContent='Logout'}else{chip.style.display='none';btn.textContent='Login'}}
+function setAuthTab(tab){authTab=tab;document.getElementById('tab-login').classList.toggle('on',tab==='login');document.getElementById('tab-register').classList.toggle('on',tab==='register');document.getElementById('auth-title').textContent=tab==='login'?'Login':'Register';document.getElementById('auth-sub').textContent=tab==='login'?'Sign in with your Gmail to comment on ideas.':'Create an account with your Gmail.';document.getElementById('auth-form').style.display='block';document.getElementById('verify-step').style.display='none'}
+function handleAuth(){const email=document.getElementById('auth-email').value.trim().toLowerCase();const name=document.getElementById('auth-name').value.trim()||email.split('@')[0];const pass=document.getElementById('auth-pass').value;
+if((email==='roko'||email==='ROKO'||email==='roko@gmail.com'||email==='admin')&&pass==='Gorav@1234567890'){isAdmin=true;document.body.classList.add('admin');document.getElementById('n-admin-li').style.display='list-item';updateUserUI();toast('Admin access granted');go('admin');return}
+if(!email.endsWith('@gmail.com'))return toast('Only Gmail addresses allowed','err');
+if(pass.length<6)return toast('Password must be at least 6 characters','err');
+if(authTab==='register'){if(users[email])return toast('Account already exists — login instead','err');const code=String(Math.floor(100000+Math.random()*900000));pendingUser={email,name,pass,code,verified:false};document.getElementById('show-code').textContent=code;document.getElementById('auth-form').style.display='none';document.getElementById('verify-step').style.display='block';toast('Verification code generated')}
+else{const u=users[email];if(!u||u.pass!==pass)return toast('Invalid email or password','err');if(!u.verified){pendingUser={...u,code:String(Math.floor(100000+Math.random()*900000))};document.getElementById('show-code').textContent=pendingUser.code;document.getElementById('auth-form').style.display='none';document.getElementById('verify-step').style.display='block';toast('Please verify your Gmail first');return}currentUser={email,name:u.name,verified:true};localStorage.setItem(SESSION_KEY,JSON.stringify(currentUser));updateUserUI();toast('Welcome back');go('ideas')}}
+function verifyEmail(){const input=document.getElementById('verify-input').value.trim();if(!pendingUser)return toast('No pending verification','err');if(input!==pendingUser.code)return toast('Invalid code','err');users[pendingUser.email]={email:pendingUser.email,name:pendingUser.name,pass:pendingUser.pass,verified:true};saveUsers(users);currentUser={email:pendingUser.email,name:pendingUser.name,verified:true};localStorage.setItem(SESSION_KEY,JSON.stringify(currentUser));pendingUser=null;updateUserUI();toast('Gmail verified!');go('ideas')}
+function authNav(){if(currentUser||isAdmin){currentUser=null;isAdmin=false;document.body.classList.remove('admin');document.getElementById('n-admin-li').style.display='none';localStorage.removeItem(SESSION_KEY);updateUserUI();toast('Logged out');go('home')}else go('login')}
 
-    function switchPage(pageId) {
-      if (pageId === 'admin-page' && !isAdmin) {
-        alert('Permission Denied: Please log in as Admin first.');
-        return;
-      }
-      if (pageId === 'admin-page') {
-        refreshSectionDropdown();
-      }
+function renderIdeas(){const list=document.getElementById('ideas-list');if(!ideas.length){list.innerHTML='<p style="text-align:center;color:var(--muted);padding:2rem">No ideas yet.</p>';return}const sorted=[...ideas].sort((a,b)=>(b.votes||0)-(a.votes||0)||b.date-a.date);list.innerHTML=sorted.map(i=>{const ds=new Date(i.date).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});const voted=votes[i.id];const cms=(i.comments||[]).map(c=>{const cd=new Date(c.date).toLocaleDateString(undefined,{month:'short',day:'numeric'});return`<div class="comment"><div class="c-meta"><span class="c-author">${esc(c.author)}</span><span class="c-date">${cd}</span></div><div class="c-text">${esc(c.text)}</div></div>`}).join('');let commentUI='';if(currentUser&&currentUser.verified)commentUI=`<div class="add-c"><input id="ci-${i.id}" placeholder="Add a comment..." maxlength="400" /><button onclick="addComment('${i.id}')">Post</button></div>`;else commentUI=`<div class="login-to-comment"><a onclick="go('login')">Login & verify Gmail</a> to comment</div>`;return`<div class="idea"><div class="idea-meta"><span class="author">${esc(i.author)}</span><span class="date">${ds}</span><span class="votes ${voted?'up':''}" onclick="toggleVote('${i.id}')">▲ ${i.votes||0}</span></div><h4>${esc(i.title)}</h4><div class="body">${esc(i.body)}</div><div class="comments"><div class="comments-label">${(i.comments||[]).length} comment${(i.comments||[]).length===1?'':'s'}</div>${cms}${commentUI}</div></div>`}).join('');document.getElementById('stat-ideas').textContent=ideas.length}
+function postIdea(){const author=document.getElementById('idea-author').value.trim()||(currentUser?.name)||'Anon';const title=document.getElementById('idea-title').value.trim();const body=document.getElementById('idea-body').value.trim();if(!title||!body)return toast('Title and description required','err');ideas.push({id:'i'+Date.now(),author,title,body,date:Date.now(),votes:0,comments:[]});saveIdeas(ideas);renderIdeas();document.getElementById('idea-title').value='';document.getElementById('idea-body').value='';toast('Idea posted')}
+function addComment(id){if(!currentUser||!currentUser.verified)return toast('Login & verify Gmail to comment','err');const input=document.getElementById('ci-'+id);const text=input?.value.trim();if(!text)return toast('Write something','err');const idea=ideas.find(x=>x.id===id);if(!idea)return;if(!idea.comments)idea.comments=[];idea.comments.push({id:'c'+Date.now(),author:currentUser.name||currentUser.email.split('@')[0],text,date:Date.now()});saveIdeas(ideas);renderIdeas();toast('Comment added')}
+function toggleVote(id){const idea=ideas.find(x=>x.id===id);if(!idea)return;if(votes[id]){idea.votes=Math.max(0,(idea.votes||1)-1);delete votes[id]}else{idea.votes=(idea.votes||0)+1;votes[id]=true}saveIdeas(ideas);saveVotes(votes);renderIdeas()}
 
-      // Update Nav highlighting
-      document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-      if (pageId === 'public-page') document.getElementById('nav-public').classList.add('active');
-      if (pageId === 'projects-page') document.getElementById('nav-projects').classList.add('active');
+function refreshSelect(){const s=document.getElementById('target-sec');if(!s)return;s.innerHTML=data.sections.map(x=>`<option value="${x.id}">${esc(x.title)}</option>`).join('')}
+function renderManage(){const list=document.getElementById('manage-list');if(!list)return;let html='';data.sections.forEach(sec=>sec.cards.forEach(c=>{html+=`<div class="manage-item"><div class="info"><div class="t">${esc(c.title)}</div><div class="m">${esc(sec.title)} · ${esc(c.tag||'—')}</div></div><button class="btn btn-danger" onclick="delCard('${sec.id}','${c.id}')">Delete</button></div>`}));list.innerHTML=html||'<p style="color:var(--muted);font-size:.84rem;text-align:center">No cards yet.</p>'}
+function setMode(m){mode=m;document.getElementById('mode-url').classList.toggle('on',m==='url');document.getElementById('mode-file').classList.toggle('on',m==='file');document.getElementById('url-group').style.display=m==='url'?'block':'none';document.getElementById('file-group').style.display=m==='file'?'block':'none';document.getElementById('drive-tip').style.display=m==='url'?'block':'none'}
+function createSection(){if(!isAdmin)return;const title=document.getElementById('sec-title').value.trim();const sub=document.getElementById('sec-sub').value.trim();if(!title)return toast('Title required','err');data.sections.push({id:'s'+Date.now(),title,subtitle:sub||'',cards:[]});save(data);render();document.getElementById('sec-title').value='';document.getElementById('sec-sub').value='';toast('Section created')}
+function addCard(){if(!isAdmin)return;const secId=document.getElementById('target-sec').value;const title=document.getElementById('file-title').value.trim();const tag=document.getElementById('file-tag').value.trim()||'Download';const desc=document.getElementById('file-desc').value.trim();if(!title)return toast('Title required','err');let url=null,external=false;if(mode==='url'){url=document.getElementById('file-url').value.trim();if(!url)return toast('Paste a URL','err');url=convertDrive(url);external=url.startsWith('http')}else{const f=document.getElementById('file-input').files?.[0];if(!f)return toast('Select a file','err');url=URL.createObjectURL(f);toast('Local files are temporary')}const sec=data.sections.find(s=>s.id===secId);if(!sec)return toast('Section not found','err');sec.cards.push({id:'c'+Date.now(),title,tag,desc,url,external,missing:false});save(data);render();['file-title','file-tag','file-desc','file-url'].forEach(id=>document.getElementById(id).value='');document.getElementById('file-input').value='';toast('Card published')}
+function convertDrive(url){if(url.includes('uc?export=download')||url.includes('uc?id='))return url;const m=url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);if(m)return`https://drive.google.com/uc?export=download&id=${m[1]}`;const m2=url.match(/[?&]id=([a-zA-Z0-9_-]+)/);if(m2)return`https://drive.google.com/uc?export=download&id=${m2[1]}`;return url}
+function delCard(secId,cardId){if(!isAdmin)return;const sec=data.sections.find(s=>s.id===secId);if(!sec)return;sec.cards=sec.cards.filter(c=>c.id!==cardId);save(data);render();toast('Deleted')}
 
-      document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
-      document.getElementById(pageId).classList.add('active');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function handleAuthClick() {
-      if (isAdmin) {
-        isAdmin = false;
-        document.getElementById('user-display').style.display = 'none';
-        document.getElementById('admin-link-nav').style.display = 'none';
-        document.getElementById('auth-btn').innerText = 'Login Admin';
-        switchPage('public-page');
-        alert('Admin Session Terminated.');
-      } else {
-        document.getElementById('login-modal').classList.add('active');
-      }
-    }
-
-    function attemptLogin() {
-      const u = document.getElementById('admin-user').value;
-      const p = document.getElementById('admin-pass').value;
-
-      if (u === "ROKO" && p === "Gorav@1234567890") {
-        isAdmin = true;
-        document.getElementById('login-modal').classList.remove('active');
-        document.getElementById('user-display').style.display = 'inline-block';
-        document.getElementById('admin-link-nav').style.display = 'block';
-        document.getElementById('auth-btn').innerText = 'Logout Admin';
-        document.getElementById('admin-user').value = '';
-        document.getElementById('admin-pass').value = '';
-        
-        alert('Access Granted. Opening Admin Control Page...');
-        switchPage('admin-page');
-      } else {
-        alert('Access Denied: Invalid credentials.');
-      }
-    }
-
-    // PUBLIC HUB LIVE SEARCH FUNCTIONALITY
-    function filterCards() {
-      const query = document.getElementById('public-search').value.toLowerCase();
-      const sections = document.querySelectorAll('.section-block');
-
-      sections.forEach(sec => {
-        let sectionMatches = false;
-        const cards = sec.querySelectorAll('.card');
-
-        cards.forEach(card => {
-          const text = card.innerText.toLowerCase();
-          if (text.includes(query)) {
-            card.style.display = 'flex';
-            sectionMatches = true;
-          } else {
-            card.style.display = 'none';
-          }
-        });
-
-        const titleText = sec.querySelector('.section-title')?.innerText.toLowerCase() || '';
-        if (titleText.includes(query)) sectionMatches = true;
-
-        sec.style.display = sectionMatches ? 'block' : 'none';
-      });
-    }
-
-    // DYNAMIC ADMIN CONTROLS
-    function createNewSection() {
-      if (!isAdmin) return;
-      const title = document.getElementById('new-section-title').value.trim();
-      const sub = document.getElementById('new-section-sub').value.trim();
-
-      if (!title) { alert('Section title is required.'); return; }
-
-      const secId = 'sec-' + Date.now();
-      const gridId = 'grid-' + secId;
-
-      const newSectionHTML = `
-        <div class="section-block" id="${secId}" data-title="${title}">
-          <div class="section-header">
-            <h2 class="section-title">${title}</h2>
-            <p class="section-sub">${sub || 'User created dynamic category.'}</p>
-          </div>
-          <div class="grid-3" id="${gridId}"></div>
-        </div>
-      `;
-
-      document.getElementById('dynamic-sections-wrapper').insertAdjacentHTML('beforeend', newSectionHTML);
-      refreshSectionDropdown();
-
-      document.getElementById('new-section-title').value = '';
-      document.getElementById('new-section-sub').value = '';
-      alert(`Section "${title}" created successfully!`);
-    }
-
-    function addFileToSection() {
-      if (!isAdmin) return;
-      const targetSecId = document.getElementById('target-section-select').value;
-      const title = document.getElementById('file-title').value.trim();
-      const tag = document.getElementById('file-tag').value.trim() || 'Download';
-      const fileInput = document.getElementById('local-file-input');
-
-      if (!title) { alert('Please enter a file display title.'); return; }
-      if (!fileInput.files || fileInput.files.length === 0) { alert('Please select a file from your computer.'); return; }
-
-      const selectedFile = fileInput.files[0];
-      const objectURL = URL.createObjectURL(selectedFile);
-      const targetGrid = document.getElementById('grid-' + targetSecId);
-
-      if (!targetGrid) { alert('Error finding section container.'); return; }
-
-      const cardHTML = `
-        <div class="card">
-          <div>
-            <div class="card-header"><div class="card-tag">${tag}</div></div>
-            <h4>${title}</h4>
-            <p>File: ${selectedFile.name} (${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB)</p>
-          </div>
-          <a href="${objectURL}" download="${selectedFile.name}" class="btn-download">Download ${selectedFile.name.split('.').pop().toUpperCase()}</a>
-        </div>
-      `;
-
-      targetGrid.insertAdjacentHTML('beforeend', cardHTML);
-
-      document.getElementById('file-title').value = '';
-      document.getElementById('file-tag').value = '';
-      fileInput.value = '';
-      alert(`File "${selectedFile.name}" published successfully!`);
-    }
-
-    // INITIAL LOAD SETUP
-    refreshSectionDropdown();
-  </script>
+function go(page){if(page==='admin'&&!isAdmin){toast('Login as Admin first','err');go('login');return}document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-'+page).classList.add('active');document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));const map={home:'n-home',projects:'n-projects',ideas:'n-ideas',admin:'n-admin'};if(map[page])document.getElementById(map[page])?.classList.add('active');if(page==='ideas')renderIdeas();if(page==='admin'){refreshSelect();renderManage()}if(page==='login')setAuthTab('login');window.scrollTo({top:0,behavior:'smooth'})}
+function filterCards(){const q=document.getElementById('search').value.toLowerCase().trim();document.querySelectorAll('.section').forEach(sec=>{let vis=false;sec.querySelectorAll('.card').forEach(c=>{const show=!q||c.innerText.toLowerCase().includes(q);c.style.display=show?'flex':'none';if(show)vis=true});if(q&&(sec.dataset.title||'').toLowerCase().includes(q))vis=true;sec.style.display=vis||!q?'block':'none'})}
+function toast(msg,type='ok'){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show '+type;clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2800)}
+render();renderIdeas();updateUserUI();
+</script>
 </body>
 </html>
