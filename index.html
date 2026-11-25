@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GD Studios — Software, Tools & Future Ideas</title>
   <meta name="description" content="GD Studios by ROKO. Download tools, explore projects, play free games, and share future ideas." />
   <meta name="robots" content="index, follow" />
   <meta name="theme-color" content="#020617" />
@@ -23,305 +22,799 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
+  <title>GD Studios — Software & Future Ideas</title>
+
   <style>
-    :root{--bg:#020617;--surface:#0f172a;--border:rgba(148,163,184,.12);--text:#f1f5f9;--muted:#94a3b8;--cyan:#22d3ee;--blue:#3b82f6;--purple:#a78bfa;--green:#34d399;--red:#f87171;--orange:#fb923c;--radius:14px}
-    *{box-sizing:border-box;margin:0;padding:0}
-    html{scroll-behavior:smooth}
-    body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;overflow-x:hidden}
-    #bg-canvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
-    .container{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 1.25rem}
-    .nav-wrap{position:sticky;top:0;z-index:100;background:rgba(2,6,23,.82);backdrop-filter:blur(18px);border-bottom:1px solid var(--border)}
-    .nav{display:flex;align-items:center;justify-content:space-between;height:62px}
-    .logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.12rem;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
-    .logo-badge{font-size:.58rem;font-weight:600;background:rgba(34,211,238,.12);color:var(--cyan);padding:2px 7px;border-radius:999px;border:1px solid rgba(34,211,238,.25)}
-    .nav-links{display:flex;gap:2px;list-style:none;align-items:center}
-    .nav-links a{color:var(--muted);text-decoration:none;font-size:.84rem;font-weight:500;padding:7px 12px;border-radius:8px;transition:all .15s}
-    .nav-links a:hover{color:#fff;background:rgba(255,255,255,.05)}
-    .nav-links a.active{color:#fff;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.2)}
-    .nav-right{display:flex;align-items:center;gap:8px}
-    #user-chip{font-size:.75rem;color:var(--green);font-weight:600;display:none;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .btn{border:none;cursor:pointer;font-family:inherit;font-weight:600;border-radius:10px;transition:all .15s;display:inline-flex;align-items:center;justify-content:center;gap:6px}
-    .btn:active{transform:scale(.97)}
-    .btn-sm{padding:7px 13px;font-size:.8rem}
-    .btn-md{padding:11px 18px;font-size:.88rem}
-    .btn-lg{padding:13px 22px;font-size:.94rem}
-    .btn-primary{background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff}
-    .btn-primary:hover{filter:brightness(1.1)}
-    .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
-    .btn-ghost:hover{border-color:var(--cyan);color:var(--cyan)}
-    .btn-cyan{background:var(--cyan);color:#020617}
-    .btn-green{background:var(--green);color:#020617}
-    .btn-yt{background:#ef4444;color:#fff}
-    .btn-yt:hover{background:#dc2626}
-    .btn-danger{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);color:var(--red);padding:5px 10px;font-size:.74rem;border-radius:7px}
-    .page{display:none;padding:2.2rem 0 4.5rem}
-    .page.active{display:block;animation:up .28s ease}
-    @keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-    .hero{text-align:center;max-width:680px;margin:0 auto 2.5rem;padding-top:1.2rem}
-    .hero-eyebrow{display:inline-flex;font-size:.76rem;font-weight:600;color:var(--cyan);background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.2);padding:4px 12px;border-radius:999px;margin-bottom:1.1rem}
-    .hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,5vw,3rem);font-weight:700;line-height:1.12;margin-bottom:.8rem;letter-spacing:-.02em}
-    .hero h1 span{background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-    .hero p{color:var(--muted);font-size:1.05rem;margin-bottom:1.5rem}
-    .hero-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:2.5rem}
-    .stat{background:var(--surface);padding:1.2rem 1rem;text-align:center}
-    .stat-num{font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:700}
-    .stat-label{font-size:.76rem;color:var(--muted)}
-    .search-wrap{max-width:440px;margin:0 auto 2.2rem;position:relative}
-    .search-wrap input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 16px 12px 40px;color:#fff;font-size:.9rem;outline:none}
-    .search-wrap input:focus{border-color:var(--cyan)}
-    .search-wrap::before{content:'⌕';position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:1.1rem}
-    .section{margin-bottom:2.8rem}
-    .section-head{margin-bottom:1.1rem}
-    .section-head h2{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:600}
-    .section-head p{color:var(--muted);font-size:.86rem}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem}
-    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;display:flex;flex-direction:column;transition:all .2s}
-    .card:hover{border-color:rgba(34,211,238,.3);transform:translateY(-2px)}
-    .card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
-    .tag{font-size:.66rem;font-weight:600;text-transform:uppercase;letter-spacing:.3px;padding:3px 8px;border-radius:6px;background:rgba(34,211,238,.1);color:var(--cyan)}
-    .tag.purple{background:rgba(167,139,250,.12);color:var(--purple)}
-    .missing{font-size:.66rem;color:var(--red);font-weight:600}
-    .card h3{font-size:1.02rem;font-weight:600;margin-bottom:.3rem}
-    .card p{font-size:.84rem;color:var(--muted);flex:1;margin-bottom:1rem}
-    .card-btn{display:block;text-align:center;text-decoration:none;background:rgba(255,255,255,.04);border:1px solid var(--border);color:#fff;padding:9px;border-radius:9px;font-size:.84rem;font-weight:600}
-    .card-btn:hover{background:var(--blue);border-color:var(--blue)}
-    .card-btn.disabled{background:rgba(248,113,113,.07);border-color:rgba(248,113,113,.2);color:var(--red);cursor:not-allowed}
-    .proj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.15rem}
-    .proj{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;position:relative;overflow:hidden}
-    .proj::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--purple))}
-    .proj h3{font-family:'Space Grotesk',sans-serif;font-size:1.2rem;margin:.45rem 0}
-    .proj>p{color:var(--muted);font-size:.86rem;margin-bottom:.9rem}
-    .pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:.9rem}
-    .pill{font-size:.7rem;font-weight:600;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--cyan)}
-    .feat{list-style:none;margin-bottom:1.1rem}
-    .feat li{font-size:.84rem;color:#cbd5e1;margin-bottom:.35rem;display:flex;gap:7px}
-    .feat li::before{content:'→';color:var(--cyan)}
-    .auth-wrap{max-width:400px;margin:2rem auto 0;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:2rem 1.75rem}
-    .auth-wrap h2{font-family:'Space Grotesk',sans-serif;font-size:1.4rem;text-align:center;margin-bottom:.35rem}
-    .auth-wrap .sub{text-align:center;color:var(--muted);font-size:.88rem;margin-bottom:1.5rem}
-    .auth-tabs{display:flex;gap:6px;margin-bottom:1.3rem}
-    .auth-tabs button{flex:1;padding:9px;border-radius:9px;border:1px solid var(--border);background:transparent;color:var(--muted);font-weight:600;font-size:.85rem;cursor:pointer}
-    .auth-tabs button.on{background:rgba(34,211,238,.1);border-color:rgba(34,211,238,.35);color:var(--cyan)}
-    .field{margin-bottom:.9rem}
-    .field label{display:block;font-size:.8rem;font-weight:600;margin-bottom:.3rem;color:#e2e8f0}
-    .field input,.field textarea,.field select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:#fff;font-size:.9rem;font-family:inherit;outline:none}
-    .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--cyan)}
-    .field textarea{min-height:85px;resize:vertical}
-    .auth-note{font-size:.78rem;color:var(--muted);text-align:center;margin-top:1rem;line-height:1.45}
-    .verify-box{background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.2);border-radius:12px;padding:1rem;margin-bottom:1rem;text-align:center}
-    .verify-box p{font-size:.85rem;color:#a5f3fc;margin-bottom:.6rem}
-    .verify-code{font-family:'Space Grotesk',sans-serif;font-size:1.6rem;font-weight:700;letter-spacing:6px;color:var(--cyan);margin:.5rem 0}
-    .yt-bar{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.22);border-radius:14px;padding:1.2rem 1.4rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1.8rem}
-    .yt-bar h3{font-size:1.02rem}
-    .yt-bar p{font-size:.84rem;color:var(--muted);margin:0}
-    .idea-form{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.4rem;margin-bottom:1.8rem}
-    .idea-form h3{font-size:1.02rem;margin-bottom:.25rem;color:var(--purple)}
-    .idea-form>p{font-size:.84rem;color:var(--muted);margin-bottom:1rem}
-    .idea{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.25rem;margin-bottom:1rem}
-    .idea-meta{display:flex;gap:10px;align-items:center;margin-bottom:.35rem;font-size:.76rem}
-    .idea-meta .author{color:var(--cyan);font-weight:600}
-    .idea-meta .date{color:var(--muted)}
-    .idea-meta .votes{margin-left:auto;display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.04);border:1px solid var(--border);padding:3px 8px;border-radius:7px;cursor:pointer;font-weight:600;font-size:.76rem;color:var(--muted)}
-    .idea-meta .votes.up,.idea-meta .votes:hover{color:var(--cyan);border-color:rgba(34,211,238,.3)}
-    .idea h4{font-size:1.08rem;margin-bottom:.35rem}
-    .idea .body{font-size:.88rem;color:#cbd5e1;margin-bottom:.9rem;white-space:pre-wrap}
-    .comments{border-top:1px solid var(--border);padding-top:.85rem}
-    .comments-label{font-size:.78rem;color:var(--muted);font-weight:600;margin-bottom:.55rem}
-    .comment{background:rgba(0,0,0,.22);border-radius:10px;padding:.65rem .85rem;margin-bottom:.45rem}
-    .comment .c-meta{font-size:.72rem;margin-bottom:.2rem}
-    .comment .c-author{color:var(--green);font-weight:600}
-    .comment .c-date{color:var(--muted);margin-left:6px}
-    .comment .c-text{font-size:.84rem;color:#e2e8f0}
-    .add-c{display:flex;gap:8px;margin-top:.55rem}
-    .add-c input{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:8px 11px;color:#fff;font-size:.84rem;outline:none}
-    .add-c input:focus{border-color:var(--cyan)}
-    .add-c button{padding:8px 13px;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.25);color:var(--cyan);border-radius:9px;font-weight:600;font-size:.8rem;cursor:pointer}
-    .login-to-comment{font-size:.84rem;color:var(--muted);text-align:center;padding:.7rem;background:rgba(0,0,0,.2);border-radius:10px;margin-top:.5rem}
-    .login-to-comment a{color:var(--cyan);cursor:pointer;text-decoration:underline}
-    .admin-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.4rem;margin-bottom:1.2rem}
-    .admin-box h3{font-size:1.08rem;margin-bottom:.25rem}
-    .admin-box>p{font-size:.84rem;color:var(--muted);margin-bottom:1rem}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
-    .row .full{grid-column:1/-1}
-    .toggle{display:flex;gap:8px;margin-bottom:.85rem}
-    .toggle button{flex:1;padding:9px;border-radius:9px;background:rgba(255,255,255,.03);border:1px solid var(--border);color:var(--muted);font-weight:600;font-size:.84rem;cursor:pointer}
-    .toggle button.on{background:rgba(34,211,238,.1);border-color:rgba(34,211,238,.35);color:var(--cyan)}
-    .tip{background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.18);border-radius:10px;padding:10px 12px;font-size:.78rem;color:#a5f3fc;margin-bottom:.85rem;line-height:1.5}
-    .tip strong{color:#fff}
-    .manage-item{display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.22);border:1px solid var(--border);border-radius:10px;padding:9px 12px;margin-bottom:7px;gap:10px}
-    .manage-item .info{flex:1;min-width:0}
-    .manage-item .t{font-size:.86rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .manage-item .m{font-size:.72rem;color:var(--muted)}
-    footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;color:var(--muted);font-size:.82rem;position:relative;z-index:1}
-    footer a{color:var(--cyan);text-decoration:none}
-    .footer-links{display:flex;gap:1.1rem;justify-content:center;margin-bottom:.7rem;flex-wrap:wrap}
-    .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface);border:1px solid var(--border);color:#fff;padding:10px 16px;border-radius:10px;font-size:.85rem;font-weight:500;z-index:300;opacity:0;transition:all .25s;pointer-events:none}
-    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-    .toast.ok{border-color:rgba(52,211,153,.4)}
-    .toast.err{border-color:rgba(248,113,113,.4)}
-    .admin-only{display:none}
-    body.admin .admin-only{display:block}
-    @media(max-width:720px){.nav-links{display:none}.stats{grid-template-columns:1fr 1fr 1fr}.row{grid-template-columns:1fr}.yt-bar{flex-direction:column;text-align:center}.hero-actions{flex-direction:column}.hero-actions .btn{width:100%}}
+    :root {
+      --bg: #05070f;
+      --card: #0d1320;
+      --border: #1e293b;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #22d3ee;
+      --accent2: #818cf8;
+      --danger: #f87171;
+      --success: #34d399;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    h1, h2, h3, .logo { font-family: 'Space Grotesk', sans-serif; }
+    a { color: var(--accent); text-decoration: none; }
+    button, input, textarea { font: inherit; border: none; outline: none; }
+
+    nav {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(5,7,15,0.9);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo { font-weight: 700; font-size: 1.2rem; letter-spacing: -0.3px; }
+    .logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 1.3rem; align-items: center; }
+    .nav-links a, .nav-links button {
+      background: none; color: var(--muted); cursor: pointer; font-size: 0.92rem; font-weight: 500;
+    }
+    .nav-links a:hover, .nav-links button:hover { color: var(--text); }
+    #user-chip {
+      display: none; background: #0f172a; border: 1px solid var(--border);
+      padding: 0.28rem 0.75rem; border-radius: 999px; font-size: 0.82rem;
+    }
+    #auth-btn {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #020617; font-weight: 600; padding: 0.42rem 1.05rem;
+      border-radius: 8px; cursor: pointer;
+    }
+
+    .hero {
+      text-align: center; padding: 5.5rem 1.5rem 3.5rem;
+      background: radial-gradient(ellipse at top, #0f172a 0%, transparent 70%);
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 5.5vw, 3.6rem);
+      font-weight: 700; letter-spacing: -1.2px;
+      background: linear-gradient(90deg, #f1f5f9, var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero p { color: var(--muted); margin: 1.1rem auto 2.2rem; max-width: 460px; font-size: 1.05rem; }
+    .hero-btns { display: flex; gap: 0.9rem; justify-content: center; flex-wrap: wrap; }
+
+    .btn {
+      padding: 0.7rem 1.45rem; border-radius: 10px; font-weight: 600;
+      cursor: pointer; transition: transform .15s, opacity .15s;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #020617;
+    }
+    .btn-outline {
+      background: transparent; border: 1px solid var(--border); color: var(--text);
+    }
+    .btn-danger {
+      background: #7f1d1d; color: #fecaca; padding: 0.32rem 0.65rem;
+      border-radius: 6px; font-size: 0.78rem; cursor: pointer;
+    }
+    .btn-sm {
+      width: 100%; padding: 0.55rem; border-radius: 8px;
+      background: #1e293b; color: var(--text); cursor: pointer; font-weight: 500;
+    }
+    .btn-sm.missing { color: var(--danger); }
+
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 1.5rem 4.5rem; }
+    .section { margin-bottom: 3.8rem; }
+    .section-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.4rem; gap: 1rem; }
+    .section-head h2 { font-size: 1.55rem; }
+    .section-head p { color: var(--muted); font-size: 0.95rem; }
+
+    .cards {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 1.15rem;
+    }
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.35rem; position: relative;
+    }
+    .card .tag {
+      font-size: 0.72rem; font-weight: 600; color: var(--accent);
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .card h3 { margin: 0.4rem 0 0.45rem; font-size: 1.12rem; }
+    .card p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.1rem; }
+
+    /* Admin controls */
+    .admin-bar {
+      background: #0f172a; border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.2rem; margin-bottom: 2rem;
+      display: none;
+    }
+    .admin-bar.show { display: block; }
+    .admin-bar h3 { margin-bottom: 0.8rem; font-size: 1.05rem; }
+    .admin-row { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.7rem; }
+    .admin-row input, .admin-row select {
+      padding: 0.5rem 0.7rem; border-radius: 7px;
+      background: #020617; border: 1px solid var(--border); color: var(--text); flex: 1; min-width: 120px;
+    }
+
+    /* Auth Modal */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.72);
+      display: none; align-items: center; justify-content: center; z-index: 100;
+      padding: 1rem;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; width: 100%; max-width: 400px; padding: 1.9rem;
+    }
+    .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.4rem; }
+    .tabs button {
+      flex: 1; padding: 0.5rem; border-radius: 8px; background: #1e293b;
+      color: var(--muted); cursor: pointer; font-weight: 500;
+    }
+    .tabs button.active { background: var(--accent); color: #020617; font-weight: 600; }
+    .form-group { margin-bottom: 0.95rem; }
+    .form-group label { display: block; font-size: 0.82rem; color: var(--muted); margin-bottom: 0.28rem; }
+    .form-group input {
+      width: 100%; padding: 0.68rem 0.85rem; border-radius: 8px;
+      background: #0f172a; border: 1px solid var(--border); color: var(--text);
+    }
+    .modal .btn { width: 100%; margin-top: 0.4rem; }
+    .msg { font-size: 0.88rem; margin-top: 0.9rem; text-align: center; }
+    .msg.err { color: var(--danger); }
+    .msg.ok { color: var(--success); }
+
+    /* Ideas */
+    .idea-form {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.4rem; margin-bottom: 1.8rem;
+    }
+    .idea-form input, .idea-form textarea {
+      width: 100%; padding: 0.68rem; border-radius: 8px;
+      background: #0f172a; border: 1px solid var(--border); color: var(--text);
+      margin-bottom: 0.7rem;
+    }
+    .idea-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.25rem; margin-bottom: 1.1rem;
+    }
+    .idea-meta {
+      font-size: 0.78rem; color: var(--muted); margin-bottom: 0.55rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .comments { margin-top: 1rem; border-top: 1px solid var(--border); padding-top: 0.9rem; }
+    .comment {
+      background: #0f172a; border-radius: 8px; padding: 0.65rem 0.85rem;
+      margin-bottom: 0.55rem; font-size: 0.9rem;
+    }
+    .comment .c-meta { font-size: 0.73rem; color: var(--muted); margin-bottom: 0.2rem; }
+    .add-comment { display: flex; gap: 0.5rem; margin-top: 0.7rem; }
+    .add-comment input {
+      flex: 1; padding: 0.5rem 0.75rem; border-radius: 8px;
+      background: #0f172a; border: 1px solid var(--border); color: var(--text);
+    }
+    .add-comment button {
+      padding: 0.5rem 0.95rem; border-radius: 8px;
+      background: var(--accent); color: #020617; font-weight: 600; cursor: pointer;
+    }
+
+    #toast {
+      position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+      background: #1e293b; color: white; padding: 0.75rem 1.35rem;
+      border-radius: 10px; font-size: 0.93rem; z-index: 200;
+      opacity: 0; pointer-events: none; transition: opacity .3s;
+    }
+    #toast.show { opacity: 1; }
+
+    .page { display: none; }
+    .page.active { display: block; }
   </style>
 </head>
 <body>
-<canvas id="bg-canvas"></canvas>
-<div class="nav-wrap">
-  <div class="container nav">
-    <div class="logo" onclick="go('home')">GD STUDIOS <span class="logo-badge">V10</span></div>
-    <ul class="nav-links">
-      <li><a href="#" id="n-home" class="active" onclick="go('home')">Hub</a></li>
-      <li><a href="#" id="n-projects" onclick="go('projects')">Projects</a></li>
-      <li><a href="#" id="n-ideas" onclick="go('ideas')">Ideas Lab</a></li>
-      <li id="n-admin-li" style="display:none"><a href="#" id="n-admin" onclick="go('admin')">Admin</a></li>
-      <li><a href="https://discord.gg/4svqWPJePW" target="_blank" rel="noopener">Discord</a></li>
-    </ul>
-    <div class="nav-right">
+
+  <nav>
+    <div class="logo">GD <span>STUDIOS</span></div>
+    <div class="nav-links">
+      <a href="#" onclick="go('home')">Hub</a>
+      <a href="#" onclick="go('ideas')">Ideas Lab</a>
+      <a href="#" id="admin-link" style="display:none;" onclick="go('admin')">Admin</a>
       <span id="user-chip"></span>
-      <button class="btn btn-sm btn-ghost" id="auth-btn" onclick="authNav()">Login</button>
+      <button id="auth-btn" onclick="authNav()">Login</button>
     </div>
-  </div>
-</div>
-<div class="container">
+  </nav>
+
+  <!-- ==================== HOME ==================== -->
   <div id="page-home" class="page active">
     <div class="hero">
-      <div class="hero-eyebrow">✦ Independent software studio</div>
-      <h1>Build. Ship. <span>Explore.</span></h1>
+      <h1>Build. Ship. Explore.</h1>
       <p>Downloads, experiments, free games, and a public board for future ideas.</p>
-      <div class="hero-actions">
-        <button class="btn btn-lg btn-primary" onclick="go('ideas')">Open Ideas Lab</button>
-        <button class="btn btn-lg btn-ghost" onclick="go('projects')">View Projects</button>
+      <div class="hero-btns">
+        <button class="btn btn-primary" onclick="go('ideas')">Open Ideas Lab</button>
+        <button class="btn btn-outline" onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})">View Projects</button>
       </div>
     </div>
-    <div class="stats">
-      <div class="stat"><div class="stat-num" id="stat-cards">0</div><div class="stat-label">Files</div></div>
-      <div class="stat"><div class="stat-num" id="stat-ideas">0</div><div class="stat-label">Ideas</div></div>
-      <div class="stat"><div class="stat-num">3</div><div class="stat-label">Projects</div></div>
-    </div>
-    <div class="search-wrap"><input type="text" id="search" placeholder="Search downloads..." oninput="filterCards()" /></div>
-    <div id="sections"></div>
-  </div>
-  <div id="page-projects" class="page">
-    <div class="hero"><h1>Projects</h1><p>Core systems built by GD Studios.</p></div>
-    <div class="proj-grid">
-      <div class="proj"><span class="tag">Flagship</span><h3>Beast OS Kernel</h3><p>Lightweight kernel for low-resource machines.</p><div class="pills"><span class="pill">Low Latency</span><span class="pill">Custom Shell</span><span class="pill">ISO</span></div><ul class="feat"><li>Fast boot</li><li>Under 500MB idle</li><li>Sandboxed runner</li></ul><button class="card-btn" onclick="go('home')">Check Downloads</button></div>
-      <div class="proj"><span class="tag purple">Python</span><h3>Beast AI Assistant</h3><p>CustomTkinter desktop app with automation tools.</p><div class="pills"><span class="pill">CustomTkinter</span><span class="pill">Python</span><span class="pill">Async</span></div><ul class="feat"><li>Dark cyberpunk UI</li><li>Script automation</li><li>Native FS access</li></ul><button class="card-btn" onclick="go('home')">Check Downloads</button></div>
-      <div class="proj"><span class="tag">Web</span><h3>This Portal</h3><p>Distribution hub with Ideas Lab and admin controls.</p><div class="pills"><span class="pill">localStorage</span><span class="pill">Auth</span><span class="pill">Comments</span></div><ul class="feat"><li>User login + verify</li><li>Idea voting</li><li>Admin file management</li></ul><button class="card-btn" onclick="go('home')">Back to Hub</button></div>
+
+    <div class="container" id="projects">
+      <div id="sections-container"></div>
     </div>
   </div>
+
+  <!-- ==================== IDEAS LAB ==================== -->
   <div id="page-ideas" class="page">
-    <div class="hero"><h1>Ideas Lab</h1><p>Login required to post ideas and comment.</p></div>
-    <div class="yt-bar"><div><h3>Watch the process</h3><p>Builds and experiments on YouTube.</p></div><a href="https://www.youtube.com/@Logitechnoblade" target="_blank" rel="noopener" class="btn btn-md btn-yt">Subscribe @Logitechnoblade</a></div>
-    <div class="idea-form" id="idea-form-box">
-      <h3>Share a future idea</h3>
-      <p id="idea-form-note">Login & verify your Gmail to post ideas and comment.</p>
-      <div id="idea-form-fields">
-        <div class="field"><label>Title</label><input id="idea-title" placeholder="Idea title" maxlength="120" /></div>
-        <div class="field"><label>Description</label><textarea id="idea-body" placeholder="Describe the idea..."></textarea></div>
-        <button class="btn btn-md btn-primary" onclick="postIdea()">Post Idea</button>
+    <div class="container" style="padding-top: 3rem;">
+      <div class="section-head">
+        <div>
+          <h2>Ideas Lab</h2>
+          <p>Share a future idea. Login & verify your Gmail to post and comment.</p>
+        </div>
       </div>
-      <div id="idea-login-prompt" class="login-to-comment" style="display:none"><a onclick="go('login')">Login & verify Gmail</a> to post ideas</div>
-    </div>
-    <div id="ideas-list"></div>
-  </div>
-  <div id="page-login" class="page">
-    <div class="auth-wrap">
-      <h2 id="auth-title">Login</h2>
-      <p class="sub" id="auth-sub">Sign in with your Gmail to comment on ideas.</p>
-      <div class="auth-tabs"><button class="on" id="tab-login" onclick="setAuthTab('login')">Login</button><button id="tab-register" onclick="setAuthTab('register')">Register</button></div>
-      <div id="auth-form">
-        <div class="field"><label>Gmail address</label><input id="auth-email" type="email" placeholder="you@gmail.com" autocomplete="email" /></div>
-        <div class="field"><label>Display name</label><input id="auth-name" type="text" placeholder="How others see you" maxlength="30" /></div>
-        <div class="field" id="pass-field"><label>Password</label><input id="auth-pass" type="password" placeholder="Min 6 characters" autocomplete="new-password" /></div>
-        <button class="btn btn-md btn-primary" style="width:100%" id="auth-submit" onclick="handleAuth()">Continue</button>
+
+      <div id="idea-login-prompt" style="text-align:center; margin-bottom:1.8rem; color:var(--muted);">
+        You need to <a href="#" onclick="authNav()">login & verify Gmail</a> to post ideas and comment.
       </div>
-      <div id="verify-step" style="display:none">
-        <div class="verify-box"><p>We generated a verification code for your Gmail.</p><div class="verify-code" id="show-code">------</div><p style="font-size:.78rem;color:var(--muted)">In a real system this is emailed. Enter it below to verify.</p></div>
-        <div class="field"><label>Enter verification code</label><input id="verify-input" type="text" placeholder="6-digit code" maxlength="6" /></div>
-        <button class="btn btn-md btn-cyan" style="width:100%" onclick="verifyEmail()">Verify Gmail</button>
+
+      <div id="idea-form-fields" class="idea-form" style="display:none;">
+        <input id="idea-title" placeholder="Idea title" />
+        <textarea id="idea-body" rows="3" placeholder="Describe your idea..."></textarea>
+        <button class="btn btn-primary" onclick="postIdea()">Post Idea</button>
       </div>
-      <p class="auth-note">Only Gmail addresses are accepted.<br>Verified users can comment on the Ideas Lab.<br><br>Admin: use username <strong>ROKO</strong> + your admin password.</p>
+
+      <div id="ideas-list"></div>
     </div>
   </div>
+
+  <!-- ==================== ADMIN ==================== -->
   <div id="page-admin" class="page">
-    <div class="admin-box"><h3 style="color:var(--cyan)">Create Section</h3><p>Add a new category on the public hub.</p><div class="field"><label>Title</label><input id="sec-title" placeholder="Utility Tools..." /></div><div class="field"><label>Subtitle</label><input id="sec-sub" placeholder="Optional" /></div><button class="btn btn-md btn-cyan" onclick="createSection()">Create</button></div>
-    <div class="admin-box"><h3 style="color:var(--green)">Add Download Card</h3><p>Add files via external URL or local upload. Users download from Hub cards.</p><div class="toggle"><button class="on" id="mode-url" onclick="setMode('url')">External URL</button><button id="mode-file" onclick="setMode('file')">Local File</button></div><div class="tip" id="drive-tip"><strong>Tip:</strong> Paste any direct download link (Drive file, Dropbox, etc.). Single Drive file links auto-convert.</div><div class="row"><div class="field full"><label>Section</label><select id="target-sec"></select></div><div class="field"><label>Title</label><input id="file-title" placeholder="Beast AI v2.0" /></div><div class="field"><label>Tag</label><input id="file-tag" placeholder="Python, ZIP..." /></div></div><div class="field" id="url-group"><label>URL</label><input id="file-url" type="url" placeholder="https://..." /></div><div class="field" id="file-group" style="display:none"><label>File</label><input id="file-input" type="file" /></div><div class="field"><label>Description</label><input id="file-desc" placeholder="Short description" /></div><button class="btn btn-md btn-green" onclick="addCard()">Publish Card</button></div>
-    <div class="admin-box"><h3 style="color:var(--orange)">Manage Cards</h3><p>Remove cards you no longer want.</p><div id="manage-list"></div></div>
-  </div>
-</div>
-<footer>
-  <div class="container">
-    <div class="footer-links">
-      <a href="https://www.youtube.com/@Logitechnoblade" target="_blank" rel="noopener">YouTube</a>
-      <a href="https://discord.gg/4svqWPJePW" target="_blank" rel="noopener">Discord</a>
-      <a href="#" onclick="go('ideas')">Ideas Lab</a>
-      <a href="#" onclick="go('login')">Login</a>
+    <div class="container" style="padding-top: 3rem;">
+      <div class="section-head">
+        <div>
+          <h2>Admin Panel</h2>
+          <p>Manage sections and download cards.</p>
+        </div>
+      </div>
+
+      <div class="admin-bar show">
+        <h3>Add New Section</h3>
+        <div class="admin-row">
+          <input id="new-sec-title" placeholder="Section title" />
+          <input id="new-sec-sub" placeholder="Subtitle" />
+          <button class="btn btn-primary" onclick="addSection()">Create Section</button>
+        </div>
+
+        <h3 style="margin-top:1.4rem;">Add Card to Section</h3>
+        <div class="admin-row">
+          <select id="card-section"></select>
+          <input id="card-title" placeholder="Card title" />
+          <input id="card-tag" placeholder="Tag (e.g. Python)" />
+        </div>
+        <div class="admin-row">
+          <input id="card-desc" placeholder="Description" />
+          <input id="card-url" placeholder="Download URL (optional)" />
+          <button class="btn btn-primary" onclick="addCard()">Add Card</button>
+        </div>
+      </div>
+
+      <div id="admin-sections"></div>
     </div>
-    <p>© 2026 GD Studios · Built by <strong style="color:#cbd5e1">ROKO</strong></p>
   </div>
-</footer>
-<div class="toast" id="toast"></div>
-<script>
-const canvas=document.getElementById('bg-canvas'),ctx=canvas.getContext('2d');
-let W,H,particles=[],mouse={x:-999,y:-999};
-function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight}
-addEventListener('resize',resize);resize();
-addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});
-class P{constructor(){this.x=Math.random()*W;this.y=Math.random()*H;this.vx=(Math.random()-.5)*.4;this.vy=(Math.random()-.5)*.4;this.r=Math.random()*1.4+.4}
-update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>W)this.vx*=-1;if(this.y<0||this.y>H)this.vy*=-1;const dx=this.x-mouse.x,dy=this.y-mouse.y,d=Math.sqrt(dx*dx+dy*dy);if(d<120){this.vx+=dx/d*.02;this.vy+=dy/d*.02}}
-draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle='rgba(34,211,238,.45)';ctx.fill()}}
-for(let i=0;i<70;i++)particles.push(new P());
-function loop(){ctx.clearRect(0,0,W,H);particles.forEach(p=>{p.update();p.draw()});for(let i=0;i<particles.length;i++)for(let j=i+1;j<particles.length;j++){const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<100){ctx.beginPath();ctx.strokeStyle=`rgba(34,211,238,${.12*(1-d/100)})`;ctx.lineWidth=.5;ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.stroke()}}requestAnimationFrame(loop)}
-loop();
 
-let isAdmin=false,mode='url',authTab='login',pendingUser=null,currentUser=null;
-const KEY='gd_v10_data',IDEAS_KEY='gd_v10_ideas',VOTES_KEY='gd_v10_votes',USERS_KEY='gd_v10_users',SESSION_KEY='gd_v10_session';
-const DEFAULT={sections:[{id:'beast',title:'Beast Software & OS',subtitle:'Kernels, tools, and AI builds.',cards:[{id:'c1',title:'Beast OS Kernel',tag:'Desktop OS',desc:'Ultra-fast custom execution environment.',url:null,missing:true},{id:'c2',title:'Beast AI Interface',tag:'Python',desc:'CustomTkinter local assistant.',url:null,missing:true}]},{id:'software',title:'Software Releases',subtitle:'Tools and packages.',cards:[{id:'c3',title:'GD Studios Core Tools',tag:'Custom Builds',desc:'System tools and automation scripts.',url:null,missing:true}]},{id:'games',title:'Free Games',subtitle:'Play in the browser.',cards:[{id:'c4',title:'Skribbl.io',tag:'Multiplayer',desc:'Drawing and guessing game.',url:'https://skribbl.io/',external:true},{id:'c5',title:'Venge.io',tag:'FPS',desc:'3D arena shooter.',url:'https://venge.io/',external:true},{id:'c6',title:'Super Mario HTML5',tag:'Arcade',desc:'Classic platformer.',url:'https://fullscreenmario.com/',external:true}]}]};
-function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch{}return JSON.parse(JSON.stringify(DEFAULT))}
-function save(d){localStorage.setItem(KEY,JSON.stringify(d))}
-function loadIdeas(){try{const r=localStorage.getItem(IDEAS_KEY);if(r)return JSON.parse(r)}catch{}return[{id:'i1',author:'ROKO',title:'Offline AI for low-end laptops',body:'Tiny local LLM that runs offline under 4GB RAM.',date:Date.now()-172800000,votes:5,comments:[]},{id:'i2',author:'ROKO',title:'Browser desktop environment',body:'Full OS-like experience inside a browser tab.',date:Date.now()-400000000,votes:3,comments:[]}]}
-function saveIdeas(d){localStorage.setItem(IDEAS_KEY,JSON.stringify(d))}
-function loadVotes(){try{const r=localStorage.getItem(VOTES_KEY);if(r)return JSON.parse(r)}catch{}return{}}
-function saveVotes(v){localStorage.setItem(VOTES_KEY,JSON.stringify(v))}
-function loadUsers(){try{const r=localStorage.getItem(USERS_KEY);if(r)return JSON.parse(r)}catch{}return{}}
-function saveUsers(u){localStorage.setItem(USERS_KEY,JSON.stringify(u))}
-let data=load(),ideas=loadIdeas(),votes=loadVotes(),users=loadUsers();
-try{const s=localStorage.getItem(SESSION_KEY);if(s){const sess=JSON.parse(s);if(sess.email&&users[sess.email]?.verified)currentUser=sess}}catch{}
+  <!-- ==================== AUTH MODAL ==================== -->
+  <div class="modal-overlay" id="auth-modal">
+    <div class="modal">
+      <div class="tabs">
+        <button id="tab-login" class="active" onclick="switchTab('login')">Login</button>
+        <button id="tab-register" onclick="switchTab('register')">Register</button>
+      </div>
 
-function render(){const root=document.getElementById('sections');root.innerHTML='';let n=0;data.sections.forEach(sec=>{n+=sec.cards.length;const el=document.createElement('div');el.className='section';el.dataset.title=sec.title;el.innerHTML=`<div class="section-head"><h2>${esc(sec.title)}</h2><p>${esc(sec.subtitle||'')}</p></div><div class="grid"></div>`;root.appendChild(el);const grid=el.querySelector('.grid');sec.cards.forEach(c=>grid.appendChild(makeCard(c,sec.id)))});document.getElementById('stat-cards').textContent=n;document.getElementById('stat-ideas').textContent=ideas.length;refreshSelect();renderManage();updateUserUI()}
-function makeCard(c,secId){const d=document.createElement('div');d.className='card';const missing=c.missing||!c.url;const isGame=/multiplayer|fps|arcade|game/i.test(c.tag||'');let btn='';if(missing)btn=`<button class="card-btn disabled" onclick="toast('File not available','err')">File Missing</button>`;else{let label=c.external&&isGame?'Play Online ↗':c.external?'Open Link ↗':'Download';btn=`<a class="card-btn" href="${attr(c.url)}" ${c.external?'target="_blank" rel="noopener"':'download'}>${label}</a>`}d.innerHTML=`<div class="card-top"><span class="tag ${isGame?'purple':''}">${esc(c.tag||'File')}</span>${missing?'<span class="missing">MISSING</span>':''}</div><h3>${esc(c.title)}</h3><p>${esc(c.desc||'')}</p>${btn}<div class="admin-only" style="margin-top:8px"><button class="btn btn-danger" onclick="delCard('${secId}','${c.id}')">Delete</button></div>`;return d}
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-function attr(s){return String(s||'').replace(/"/g,'&quot;')}
+      <div id="form-login">
+        <div class="form-group">
+          <label>Username</label>
+          <input id="login-name" placeholder="Your username" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input id="login-pass" type="password" placeholder="Password" />
+        </div>
+        <button class="btn btn-primary" onclick="doLogin()">Login</button>
+        <div id="login-msg" class="msg"></div>
+      </div>
 
-function updateUserUI(){const chip=document.getElementById('user-chip'),btn=document.getElementById('auth-btn');if(currentUser&&currentUser.verified){chip.style.display='inline';chip.textContent=currentUser.name||currentUser.email.split('@')[0];btn.textContent='Logout'}else if(isAdmin){chip.style.display='inline';chip.textContent='Admin · ROKO';btn.textContent='Logout'}else{chip.style.display='none';btn.textContent='Login'}const fields=document.getElementById('idea-form-fields');const prompt=document.getElementById('idea-login-prompt');const note=document.getElementById('idea-form-note');if(fields&&prompt){const ok=!!(currentUser&&currentUser.verified);fields.style.display=ok?'block':'none';prompt.style.display=ok?'none':'block';if(note)note.textContent=ok?'Post your concept — it will show with your name.':'Login & verify your Gmail to post ideas and comment.'}}
-function setAuthTab(tab){authTab=tab;document.getElementById('tab-login').classList.toggle('on',tab==='login');document.getElementById('tab-register').classList.toggle('on',tab==='register');document.getElementById('auth-title').textContent=tab==='login'?'Login':'Register';document.getElementById('auth-sub').textContent=tab==='login'?'Sign in with your Gmail to comment on ideas.':'Create an account with your Gmail.';document.getElementById('auth-form').style.display='block';document.getElementById('verify-step').style.display='none'}
-function handleAuth(){const email=document.getElementById('auth-email').value.trim().toLowerCase();const name=document.getElementById('auth-name').value.trim()||email.split('@')[0];const pass=document.getElementById('auth-pass').value;
-if((email==='roko'||email==='ROKO'||email==='roko@gmail.com'||email==='admin')&&pass==='Gorav@1234567890'){isAdmin=true;document.body.classList.add('admin');document.getElementById('n-admin-li').style.display='list-item';updateUserUI();toast('Admin access granted');go('admin');return}
-if(!email.endsWith('@gmail.com'))return toast('Only Gmail addresses allowed','err');
-if(pass.length<6)return toast('Password must be at least 6 characters','err');
-if(authTab==='register'){if(users[email])return toast('Account already exists — login instead','err');const code=String(Math.floor(100000+Math.random()*900000));pendingUser={email,name,pass,code,verified:false};document.getElementById('show-code').textContent=code;document.getElementById('auth-form').style.display='none';document.getElementById('verify-step').style.display='block';toast('Verification code generated')}
-else{const u=users[email];if(!u||u.pass!==pass)return toast('Invalid email or password','err');if(!u.verified){pendingUser={...u,code:String(Math.floor(100000+Math.random()*900000))};document.getElementById('show-code').textContent=pendingUser.code;document.getElementById('auth-form').style.display='none';document.getElementById('verify-step').style.display='block';toast('Please verify your Gmail first');return}currentUser={email,name:u.name,verified:true};localStorage.setItem(SESSION_KEY,JSON.stringify(currentUser));updateUserUI();toast('Welcome back');go('ideas')}}
-function verifyEmail(){const input=document.getElementById('verify-input').value.trim();if(!pendingUser)return toast('No pending verification','err');if(input!==pendingUser.code)return toast('Invalid code','err');users[pendingUser.email]={email:pendingUser.email,name:pendingUser.name,pass:pendingUser.pass,verified:true};saveUsers(users);currentUser={email:pendingUser.email,name:pendingUser.name,verified:true};localStorage.setItem(SESSION_KEY,JSON.stringify(currentUser));pendingUser=null;updateUserUI();toast('Gmail verified!');go('ideas')}
-function authNav(){if(currentUser||isAdmin){currentUser=null;isAdmin=false;document.body.classList.remove('admin');document.getElementById('n-admin-li').style.display='none';localStorage.removeItem(SESSION_KEY);updateUserUI();toast('Logged out');go('home')}else go('login')}
+      <div id="form-register" style="display:none;">
+        <div class="form-group">
+          <label>Username</label>
+          <input id="reg-name" placeholder="Choose a username" />
+        </div>
+        <div class="form-group">
+          <label>Email (Gmail)</label>
+          <input id="reg-email" type="email" placeholder="you@gmail.com" />
+        </div>
+        <div class="form-group">
+          <label>Password (min 8 characters)</label>
+          <input id="reg-pass" type="password" placeholder="Password" />
+        </div>
+        <button class="btn btn-primary" onclick="doRegister()">Create Account</button>
+        <div id="reg-msg" class="msg"></div>
+      </div>
 
-function renderIdeas(){const list=document.getElementById('ideas-list');if(!ideas.length){list.innerHTML='<p style="text-align:center;color:var(--muted);padding:2rem">No ideas yet.</p>';return}const sorted=[...ideas].sort((a,b)=>(b.votes||0)-(a.votes||0)||b.date-a.date);list.innerHTML=sorted.map(i=>{const ds=new Date(i.date).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});const voted=votes[i.id];const cms=(i.comments||[]).map(c=>{const cd=new Date(c.date).toLocaleDateString(undefined,{month:'short',day:'numeric'});return`<div class="comment"><div class="c-meta"><span class="c-author">${esc(c.author)}</span><span class="c-date">${cd}</span></div><div class="c-text">${esc(c.text)}</div></div>`}).join('');let commentUI='';if(currentUser&&currentUser.verified)commentUI=`<div class="add-c"><input id="ci-${i.id}" placeholder="Add a comment..." maxlength="400" /><button onclick="addComment('${i.id}')">Post</button></div>`;else commentUI=`<div class="login-to-comment"><a onclick="go('login')">Login & verify Gmail</a> to comment</div>`;return`<div class="idea"><div class="idea-meta"><span class="author">${esc(i.author)}</span><span class="date">${ds}</span><span class="votes ${voted?'up':''}" onclick="toggleVote('${i.id}')">▲ ${i.votes||0}</span></div><h4>${esc(i.title)}</h4><div class="body">${esc(i.body)}</div><div class="comments"><div class="comments-label">${(i.comments||[]).length} comment${(i.comments||[]).length===1?'':'s'}</div>${cms}${commentUI}</div></div>`}).join('');document.getElementById('stat-ideas').textContent=ideas.length}
-function postIdea(){if(!currentUser||!currentUser.verified)return toast('Login & verify Gmail to post ideas','err');const author=currentUser.name||currentUser.email.split('@')[0];const title=document.getElementById('idea-title').value.trim();const body=document.getElementById('idea-body').value.trim();if(!title||!body)return toast('Title and description required','err');ideas.push({id:'i'+Date.now(),author,title,body,date:Date.now(),votes:0,comments:[]});saveIdeas(ideas);renderIdeas();document.getElementById('idea-title').value='';document.getElementById('idea-body').value='';toast('Idea posted')}
-function addComment(id){if(!currentUser||!currentUser.verified)return toast('Login & verify Gmail to comment','err');const input=document.getElementById('ci-'+id);const text=input?.value.trim();if(!text)return toast('Write something','err');const idea=ideas.find(x=>x.id===id);if(!idea)return;if(!idea.comments)idea.comments=[];idea.comments.push({id:'c'+Date.now(),author:currentUser.name||currentUser.email.split('@')[0],text,date:Date.now()});saveIdeas(ideas);renderIdeas();toast('Comment added')}
-function toggleVote(id){const idea=ideas.find(x=>x.id===id);if(!idea)return;if(votes[id]){idea.votes=Math.max(0,(idea.votes||1)-1);delete votes[id]}else{idea.votes=(idea.votes||0)+1;votes[id]=true}saveIdeas(ideas);saveVotes(votes);renderIdeas()}
+      <p style="text-align:center; margin-top:1.1rem; font-size:0.84rem; color:var(--muted);">
+        <a href="#" onclick="closeAuth()">Close</a>
+      </p>
+    </div>
+  </div>
 
-function refreshSelect(){const s=document.getElementById('target-sec');if(!s)return;s.innerHTML=data.sections.map(x=>`<option value="${x.id}">${esc(x.title)}</option>`).join('')}
-function renderManage(){const list=document.getElementById('manage-list');if(!list)return;let html='';data.sections.forEach(sec=>sec.cards.forEach(c=>{html+=`<div class="manage-item"><div class="info"><div class="t">${esc(c.title)}</div><div class="m">${esc(sec.title)} · ${esc(c.tag||'—')}</div></div><button class="btn btn-danger" onclick="delCard('${sec.id}','${c.id}')">Delete</button></div>`}));list.innerHTML=html||'<p style="color:var(--muted);font-size:.84rem;text-align:center">No cards yet.</p>'}
-function setMode(m){mode=m;document.getElementById('mode-url').classList.toggle('on',m==='url');document.getElementById('mode-file').classList.toggle('on',m==='file');document.getElementById('url-group').style.display=m==='url'?'block':'none';document.getElementById('file-group').style.display=m==='file'?'block':'none';document.getElementById('drive-tip').style.display=m==='url'?'block':'none'}
-function createSection(){if(!isAdmin)return;const title=document.getElementById('sec-title').value.trim();const sub=document.getElementById('sec-sub').value.trim();if(!title)return toast('Title required','err');data.sections.push({id:'s'+Date.now(),title,subtitle:sub||'',cards:[]});save(data);render();document.getElementById('sec-title').value='';document.getElementById('sec-sub').value='';toast('Section created')}
-function addCard(){if(!isAdmin)return;const secId=document.getElementById('target-sec').value;const title=document.getElementById('file-title').value.trim();const tag=document.getElementById('file-tag').value.trim()||'Download';const desc=document.getElementById('file-desc').value.trim();if(!title)return toast('Title required','err');let url=null,external=false;if(mode==='url'){url=document.getElementById('file-url').value.trim();if(!url)return toast('Paste a URL','err');url=convertDrive(url);external=url.startsWith('http')}else{const f=document.getElementById('file-input').files?.[0];if(!f)return toast('Select a file','err');url=URL.createObjectURL(f);toast('Local files are temporary')}const sec=data.sections.find(s=>s.id===secId);if(!sec)return toast('Section not found','err');sec.cards.push({id:'c'+Date.now(),title,tag,desc,url,external,missing:false});save(data);render();['file-title','file-tag','file-desc','file-url'].forEach(id=>document.getElementById(id).value='');document.getElementById('file-input').value='';toast('Card published')}
-function convertDrive(url){if(url.includes('uc?export=download')||url.includes('uc?id='))return url;const m=url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);if(m)return`https://drive.google.com/uc?export=download&id=${m[1]}`;const m2=url.match(/[?&]id=([a-zA-Z0-9_-]+)/);if(m2)return`https://drive.google.com/uc?export=download&id=${m2[1]}`;return url}
-function delCard(secId,cardId){if(!isAdmin)return;const sec=data.sections.find(s=>s.id===secId);if(!sec)return;sec.cards=sec.cards.filter(c=>c.id!==cardId);save(data);render();toast('Deleted')}
+  <div id="toast"></div>
 
-function go(page){if(page==='admin'&&!isAdmin){toast('Login as Admin first','err');go('login');return}document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-'+page).classList.add('active');document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));const map={home:'n-home',projects:'n-projects',ideas:'n-ideas',admin:'n-admin'};if(map[page])document.getElementById(map[page])?.classList.add('active');if(page==='ideas')renderIdeas();if(page==='admin'){refreshSelect();renderManage()}if(page==='login')setAuthTab('login');window.scrollTo({top:0,behavior:'smooth'})}
-function filterCards(){const q=document.getElementById('search').value.toLowerCase().trim();document.querySelectorAll('.section').forEach(sec=>{let vis=false;sec.querySelectorAll('.card').forEach(c=>{const show=!q||c.innerText.toLowerCase().includes(q);c.style.display=show?'flex':'none';if(show)vis=true});if(q&&(sec.dataset.title||'').toLowerCase().includes(q))vis=true;sec.style.display=vis||!q?'block':'none'})}
-function toast(msg,type='ok'){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show '+type;clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2800)}
-render();renderIdeas();updateUserUI();
-</script>
+  <script>
+    // ====================== CONFIG ======================
+    const API = "https://gd-studios-auth.onrender.com";
+    const SESSION_KEY = "gd_v10_session";
+    const IDEAS_KEY = "gd_v10_ideas";
+    const DATA_KEY = "gd_v10_data";
+    const ADMIN_PASSWORD = "rokoadmin"; // change this
+
+    let currentUser = null;
+    let isAdmin = false;
+
+    const DEFAULT = {
+      sections: [
+        {
+          id: "beast",
+          title: "Beast Software & OS",
+          subtitle: "Kernels, tools, and AI builds.",
+          cards: [
+            { id: "c1", title: "Beast OS Kernel", tag: "Desktop OS", desc: "Ultra-fast custom execution environment.", url: null, missing: true },
+            { id: "c2", title: "Beast AI Interface", tag: "Python", desc: "CustomTkinter local assistant.", url: null, missing: true }
+          ]
+        },
+        {
+          id: "software",
+          title: "Software Releases",
+          subtitle: "Tools and packages.",
+          cards: [
+            { id: "c3", title: "GD Studios Core Tools", tag: "Custom Builds", desc: "System tools and automation scripts.", url: null, missing: true }
+          ]
+        },
+        {
+          id: "games",
+          title: "Free Games",
+          subtitle: "Play in the browser.",
+          cards: [
+            { id: "c4", title: "Skribbl.io", tag: "Multiplayer", desc: "Drawing and guessing game.", url: "https://skribbl.io/", external: true },
+            { id: "c5", title: "Venge.io", tag: "FPS", desc: "3D arena shooter.", url: "https://venge.io/", external: true },
+            { id: "c6", title: "Super Mario HTML5", tag: "Arcade", desc: "Classic platformer.", url: "https://fullscreenmario.com/", external: true }
+          ]
+        }
+      ]
+    };
+
+    // ====================== HELPERS ======================
+    function toast(msg, type = "ok") {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.style.background = type === "err" ? "#7f1d1d" : "#1e293b";
+      el.classList.add("show");
+      setTimeout(() => el.classList.remove("show"), 3400);
+    }
+
+    async function api(path, options = {}) {
+      const res = await fetch(API + path, {
+        headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+        ...options
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const msg = data.detail || data.message || "Something went wrong";
+        throw new Error(typeof msg === "string" ? msg : JSON.stringify(msg));
+      }
+      return data;
+    }
+
+    function go(page) {
+      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+      const el = document.getElementById("page-" + page);
+      if (el) el.classList.add("active");
+      if (page === "ideas") renderIdeas();
+      if (page === "home") renderSections();
+      if (page === "admin") renderAdmin();
+      closeAuth();
+    }
+
+    function esc(s) {
+      return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    }
+
+    function loadData() {
+      try {
+        const r = localStorage.getItem(DATA_KEY);
+        if (r) return JSON.parse(r);
+      } catch {}
+      return JSON.parse(JSON.stringify(DEFAULT));
+    }
+
+    function saveData(d) {
+      localStorage.setItem(DATA_KEY, JSON.stringify(d));
+    }
+
+    // ====================== AUTH ======================
+    function updateUserUI() {
+      const chip = document.getElementById("user-chip");
+      const btn = document.getElementById("auth-btn");
+      const form = document.getElementById("idea-form-fields");
+      const prompt = document.getElementById("idea-login-prompt");
+      const adminLink = document.getElementById("admin-link");
+
+      if (currentUser && currentUser.verified) {
+        chip.style.display = "inline";
+        chip.textContent = currentUser.name || currentUser.username;
+        btn.textContent = "Logout";
+        form.style.display = "block";
+        prompt.style.display = "none";
+      } else {
+        chip.style.display = "none";
+        btn.textContent = "Login";
+        form.style.display = "none";
+        prompt.style.display = "block";
+      }
+
+      adminLink.style.display = isAdmin ? "inline" : "none";
+    }
+
+    function authNav() {
+      if (currentUser || isAdmin) {
+        currentUser = null;
+        isAdmin = false;
+        localStorage.removeItem(SESSION_KEY);
+        updateUserUI();
+        toast("Logged out");
+        go("home");
+      } else {
+        document.getElementById("auth-modal").classList.add("show");
+        switchTab("login");
+      }
+    }
+
+    function closeAuth() {
+      document.getElementById("auth-modal").classList.remove("show");
+    }
+
+    function switchTab(tab) {
+      document.getElementById("tab-login").classList.toggle("active", tab === "login");
+      document.getElementById("tab-register").classList.toggle("active", tab === "register");
+      document.getElementById("form-login").style.display = tab === "login" ? "block" : "none";
+      document.getElementById("form-register").style.display = tab === "register" ? "block" : "none";
+    }
+
+    async function doRegister() {
+      const name = document.getElementById("reg-name").value.trim();
+      const email = document.getElementById("reg-email").value.trim();
+      const pass = document.getElementById("reg-pass").value;
+      const msg = document.getElementById("reg-msg");
+
+      if (!name || !email || !pass) {
+        msg.className = "msg err"; msg.textContent = "Please fill all fields"; return;
+      }
+      if (pass.length < 8) {
+        msg.className = "msg err"; msg.textContent = "Password must be at least 8 characters"; return;
+      }
+
+      try {
+        msg.className = "msg"; msg.textContent = "Creating account...";
+        await api("/register", {
+          method: "POST",
+          body: JSON.stringify({ username: name, email, password: pass })
+        });
+        msg.className = "msg ok";
+        msg.textContent = "Success! Check your Gmail and click the verification link.";
+        toast("Verification email sent!");
+      } catch (e) {
+        msg.className = "msg err"; msg.textContent = e.message;
+      }
+    }
+
+    async function doLogin() {
+      const name = document.getElementById("login-name").value.trim();
+      const pass = document.getElementById("login-pass").value;
+      const msg = document.getElementById("login-msg");
+
+      if (!name || !pass) {
+        msg.className = "msg err"; msg.textContent = "Enter username and password"; return;
+      }
+
+      // Admin check
+if (name === "ROKO" && pass === "Gorav@1") {
+  isAdmin = true;
+  currentUser = { name: "ROKO", username: "ROKO", verified: true };
+  localStorage.setItem(SESSION_KEY, JSON.stringify({ ...currentUser, isAdmin: true }));
+  updateUserUI();
+  closeAuth();
+  toast("Admin logged in");
+  go("admin");
+  return;
+      }
+
+      try {
+        msg.className = "msg"; msg.textContent = "Logging in...";
+        const data = await api("/login", {
+          method: "POST",
+          body: JSON.stringify({ username: name, password: pass })
+        });
+
+        currentUser = { name, username: name, token: data.token, verified: true };
+        isAdmin = false;
+        localStorage.setItem(SESSION_KEY, JSON.stringify(currentUser));
+        updateUserUI();
+        closeAuth();
+        toast("Welcome back, " + name + "!");
+        go("ideas");
+      } catch (e) {
+        msg.className = "msg err"; msg.textContent = e.message;
+      }
+    }
+
+    async function checkVerifyToken() {
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
+      if (!token) return;
+
+      try {
+        toast("Verifying your email...");
+        const data = await api("/verify?token=" + encodeURIComponent(token));
+        toast(data.message || "Email verified!");
+        window.history.replaceState({}, document.title, window.location.pathname);
+        setTimeout(() => {
+          document.getElementById("auth-modal").classList.add("show");
+          switchTab("login");
+        }, 600);
+      } catch (e) {
+        toast(e.message, "err");
+      }
+    }
+
+    // ====================== SECTIONS & CARDS ======================
+    function renderSections() {
+      const data = loadData();
+      const container = document.getElementById("sections-container");
+      container.innerHTML = data.sections.map(sec => `
+        <div class="section">
+          <div class="section-head">
+            <div>
+              <h2>${esc(sec.title)}</h2>
+              <p>${esc(sec.subtitle || "")}</p>
+            </div>
+          </div>
+          <div class="cards">
+            ${sec.cards.map(c => `
+              <div class="card">
+                <div class="tag">${esc(c.tag || "")}</div>
+                <h3>${esc(c.title)}</h3>
+                <p>${esc(c.desc || "")}</p>
+                ${c.url 
+                  ? `<a href="${esc(c.url)}" target="_blank" class="btn-sm" style="display:block;text-align:center;">${c.external ? "Play Now" : "Download"}</a>`
+                  : `<button class="btn-sm missing">File Missing</button>`}
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderAdmin() {
+      const data = loadData();
+      const select = document.getElementById("card-section");
+      select.innerHTML = data.sections.map(s => `<option value="${s.id}">${esc(s.title)}</option>`).join("");
+
+      const list = document.getElementById("admin-sections");
+      list.innerHTML = data.sections.map(sec => `
+        <div class="section">
+          <div class="section-head">
+            <h2>${esc(sec.title)}</h2>
+            <button class="btn-danger" onclick="deleteSection('${sec.id}')">Delete Section</button>
+          </div>
+          <div class="cards">
+            ${sec.cards.map(c => `
+              <div class="card">
+                <div class="tag">${esc(c.tag || "")}</div>
+                <h3>${esc(c.title)}</h3>
+                <p>${esc(c.desc || "")}</p>
+                <button class="btn-danger" onclick="deleteCard('${sec.id}','${c.id}')">Delete Card</button>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function addSection() {
+      const title = document.getElementById("new-sec-title").value.trim();
+      const sub = document.getElementById("new-sec-sub").value.trim();
+      if (!title) return toast("Enter section title", "err");
+      const data = loadData();
+      data.sections.push({ id: "s" + Date.now(), title, subtitle: sub, cards: [] });
+      saveData(data);
+      document.getElementById("new-sec-title").value = "";
+      document.getElementById("new-sec-sub").value = "";
+      renderAdmin();
+      toast("Section created");
+    }
+
+    function addCard() {
+      const secId = document.getElementById("card-section").value;
+      const title = document.getElementById("card-title").value.trim();
+      const tag = document.getElementById("card-tag").value.trim();
+      const desc = document.getElementById("card-desc").value.trim();
+      const url = document.getElementById("card-url").value.trim();
+      if (!title) return toast("Enter card title", "err");
+
+      const data = loadData();
+      const sec = data.sections.find(s => s.id === secId);
+      if (!sec) return;
+      sec.cards.push({
+        id: "c" + Date.now(),
+        title, tag, desc,
+        url: url || null,
+        missing: !url,
+        external: url ? true : false
+      });
+      saveData(data);
+      ["card-title","card-tag","card-desc","card-url"].forEach(id => document.getElementById(id).value = "");
+      renderAdmin();
+      toast("Card added");
+    }
+
+    function deleteSection(id) {
+      if (!confirm("Delete this entire section?")) return;
+      const data = loadData();
+      data.sections = data.sections.filter(s => s.id !== id);
+      saveData(data);
+      renderAdmin();
+      toast("Section deleted");
+    }
+
+    function deleteCard(secId, cardId) {
+      if (!confirm("Delete this card?")) return;
+      const data = loadData();
+      const sec = data.sections.find(s => s.id === secId);
+      if (!sec) return;
+      sec.cards = sec.cards.filter(c => c.id !== cardId);
+      saveData(data);
+      renderAdmin();
+      toast("Card deleted");
+    }
+
+    // ====================== IDEAS ======================
+    function loadIdeas() {
+      try {
+        const r = localStorage.getItem(IDEAS_KEY);
+        if (r) return JSON.parse(r);
+      } catch {}
+      return [{
+        id: "i1",
+        author: "ROKO",
+        title: "Offline AI for low-end laptops",
+        body: "Tiny local LLM that runs offline under 4GB RAM.",
+        date: Date.now() - 172800000,
+        comments: []
+      }];
+    }
+
+    function saveIdeas(ideas) {
+      localStorage.setItem(IDEAS_KEY, JSON.stringify(ideas));
+    }
+
+    function renderIdeas() {
+      const list = document.getElementById("ideas-list");
+      const ideas = loadIdeas().sort((a, b) => b.date - a.date);
+
+      if (!ideas.length) {
+        list.innerHTML = `<p style="text-align:center;color:var(--muted);padding:2rem;">No ideas yet. Be the first!</p>`;
+        return;
+      }
+
+      list.innerHTML = ideas.map(i => {
+        const canDelete = currentUser && (currentUser.username === i.author || currentUser.name === i.author || isAdmin);
+        const commentsHtml = (i.comments || []).map(c => `
+          <div class="comment">
+            <div class="c-meta">${esc(c.author)} · ${new Date(c.date).toLocaleDateString()}</div>
+            <div>${esc(c.text)}</div>
+          </div>
+        `).join("");
+
+        return `
+          <div class="idea-card">
+            <div class="idea-meta">
+              <span>by ${esc(i.author)} · ${new Date(i.date).toLocaleDateString()}</span>
+              ${canDelete ? `<button class="btn-danger" onclick="deleteIdea('${i.id}')">Delete</button>` : ""}
+            </div>
+            <h3>${esc(i.title)}</h3>
+            <p>${esc(i.body)}</p>
+            <div class="comments">
+              ${commentsHtml || "<div style='color:var(--muted);font-size:0.85rem;'>No comments yet</div>"}
+              ${currentUser && currentUser.verified ? `
+                <div class="add-comment">
+                  <input id="comment-${i.id}" placeholder="Write a comment..." />
+                  <button onclick="addComment('${i.id}')">Post</button>
+                </div>
+              ` : ""}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function postIdea() {
+      if (!currentUser || !currentUser.verified) return toast("Please login first", "err");
+      const title = document.getElementById("idea-title").value.trim();
+      const body = document.getElementById("idea-body").value.trim();
+      if (!title || !body) return toast("Fill title and description", "err");
+
+      const ideas = loadIdeas();
+      ideas.push({
+        id: Date.now().toString(),
+        title, body,
+        author: currentUser.name || currentUser.username,
+        date: Date.now(),
+        comments: []
+      });
+      saveIdeas(ideas);
+      document.getElementById("idea-title").value = "";
+      document.getElementById("idea-body").value = "";
+      renderIdeas();
+      toast("Idea posted!");
+    }
+
+    function addComment(ideaId) {
+      if (!currentUser || !currentUser.verified) return toast("Please login first", "err");
+      const input = document.getElementById("comment-" + ideaId);
+      const text = input.value.trim();
+      if (!text) return;
+
+      const ideas = loadIdeas();
+      const idea = ideas.find(i => i.id === ideaId);
+      if (!idea) return;
+      if (!idea.comments) idea.comments = [];
+      idea.comments.push({
+        author: currentUser.name || currentUser.username,
+        text,
+        date: Date.now()
+      });
+      saveIdeas(ideas);
+      input.value = "";
+      renderIdeas();
+      toast("Comment added");
+    }
+
+    function deleteIdea(ideaId) {
+      if (!confirm("Delete this idea?")) return;
+      let ideas = loadIdeas().filter(i => i.id !== ideaId);
+      saveIdeas(ideas);
+      renderIdeas();
+      toast("Idea deleted");
+    }
+
+    // ====================== INIT ======================
+    (function init() {
+      try {
+        const s = localStorage.getItem(SESSION_KEY);
+        if (s) {
+          const sess = JSON.parse(s);
+          if (sess) {
+            currentUser = sess;
+            isAdmin = !!sess.isAdmin;
+          }
+        }
+      } catch {}
+      updateUserUI();
+      checkVerifyToken();
+      renderSections();
+      renderIdeas();
+    })();
+  </script>
 </body>
 </html>
